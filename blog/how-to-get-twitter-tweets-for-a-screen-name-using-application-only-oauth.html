@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>How to get the Twitter tweets for a screen name using Application-only OAuth (PHP & cURL)</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/how-to-get-twitter-tweets-for-a-screen-name-using-application-only-oauth.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon php"></span>
+    <h2 class="post-title">How to get the Twitter tweets for a screen name using Application-only OAuth (PHP & cURL)</h2>
+    <p class="post-meta">Mar 12, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>For a recent project, the designers had a sidebar that displayed the 5 most recent tweets from the client’s twitter account. I was surprised to find out it’s not as easy as it used to be. <a href="https://www.twitter.com/">Twitter</a> now requires you to use OAuth to display tweets from a certain account or hashtag. If you ever come across a project like this, hopefully these steps below will help you out.</p>
+
+<h3 id="step-1">Step 1</h3>
+<p>You’ll need to create a Twitter application to get an API key and secret which will allow you to make API request.</p>
+
+<p>Go to: <a href="https://dev.twitter.com/">dev.twitter.com</a> and make sure you’re logged into twitter. In the upper right side of the header you should see your avatar pict and a dropdown menu arrow. Select “My Applications” from that dropdown and then click the <strong>Create New App</strong> button. Give Twitter all the details about what your app does and then click <strong>Create your Twitter Application</strong>. Once your app is created, select it (if it’s not already open) and select the tab at the top named “API Keys”. This should show you your API key and API secret. Copy these two values, you will need them in the next steps.</p>
+
+<h3 id="step-2">Step 2</h3>
+<p>We’ll start with the back end PHP code to make this work. These code examples are from an ajax callback in Wordpress, but you should be able to fit it into your project as needed. WARN: your API key and secret should not be visible on your site so don’t put them in your javascript files.</p>
+
+<p>First, we take the key and secret and create an access token out of them, then we can use the access token to get an application bearer token from Twitter. The bearer token is what we will use to make all our API requests. The Twitter documentation for this can be found here: <a href="https://dev.twitter.com/docs/auth/application-only-auth">dev.twitter.com/docs/auth/application-only-auth</a></p>
+
+<pre><code class="language-php">add_action( 'wp_ajax_nopriv_twitter_tweets', 'twitter_tweets_callback' );
+
+function twitter_tweets_callback() 
+{
+    //settings - example values
+    $api_key = 'xvz1evFS4wEEPTGEFPHBog';
+    $api_secret = 'L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg';
+    $access_token = base64_encode(urlencode($api_key) . ':' . urlencode($api_secret));
+
+    //connect to the twitter api and get bearer token
+    $bearer_token = get_bearer_token( $access_token );
+
+    //---
+
+    //search for recent tweets for the client (method below)
+    $tweets_json = get_user_timeline($bearer_token, '[client's screen name here]');
+    
+    //echo resulting json
+    echo $tweets_json;
+    
+    die(); // this is required to return a proper result
+}
+
+function get_bearer_token( $access_token )
+{
+    $ch = curl_init( 'https://api.twitter.com/oauth2/token' );
+    
+    $post_fields  = array(
+        'grant_type'    =&gt; 'client_credentials'
+    );
+    
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Authorization: Basic ' . $access_token,
+        'Content-Type: application/x-www-form-urlencoded;charset=UTF-8'
+    ));
+    
+    //send request
+    $response = json_decode( curl_exec($ch) );
+    
+    curl_close($ch);
+    
+    return $response-&gt;access_token;
+}
+</code></pre>
+
+<h3 id="step-3">Step 3</h3>
+<p>Hopefully, success! You now have a bearer token which allows you to make application-only API requests to many of the different REST resources that Twitter offers: <a href="https://dev.twitter.com/docs/api/1.1">dev.twitter.com/docs/api/1.1</a>. If we continue with the code above, we can now access the /statuses/user_timeline.json resource to pull tweets for a specific screen name.</p>
+<pre><code class="language-php">//make a GET request using the Bearer token to access tweets for a screen name
+function get_user_timeline( $bearer_token, $screen_name )
+{
+    $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+    $fields  = array(
+        'screen_name'   =&gt; $screen_name,
+        'count'         =&gt; 5,
+        'exclude_replies'=&gt; 1
+    );
+    
+    $ch = curl_init( $url . '?' . http_build_query($fields) );
+    
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POST, 0);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        'Authorization: Bearer ' . $bearer_token
+    ));
+    
+    //send request
+    $response = curl_exec($ch);
+    
+    curl_close($ch);
+    
+    return $response;
+}</code></pre>
+
+<h3 id="step-4">Step 4</h3>
+<p>On the front-end, we can use javascript via ajax to grab the json data from PHP and generate a list of tweets to be displayed on the webpage.</p>
+<pre><code class="language-javascript">var itemTmpl = [
+    '&lt;li&gt;',
+        '&lt;span class="name"&gt;&lt;strong&gt;${name}&lt;/strong&gt; @NPCpgh&lt;/span&gt;',
+        '&lt;span class="desc"&gt;${text}&lt;/span&gt;',
+        '&lt;span class="date"&gt;${date}&lt;/span&gt;',
+        '&lt;/li&gt;'
+    ].join('\n');
+
+$.post('/wp-admin/admin-ajax.php', { action: 'twitter_tweets' }, function(response) {
+    //turn json array of object into html array and join
+    var html = $(json).map(function(index, item) {
+           return itemTmpl.replace('${name}', item.user.name)
+                          .replace('${text}', item.text);
+                          .replace('${date}', item.created_at );
+       })
+       .toArray()
+       .join('\n');
+
+    //update display list
+    $(".results").html( html );
+
+}, 'json');</code></pre>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/introducing-the-grunt-namespacer-task.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/combining-php-html-templates-with-associative-array-models.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

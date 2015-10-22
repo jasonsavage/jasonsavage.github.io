@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>How to Extend a Javascript Pseudo Class</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/how-to-extend-a-javascript-pseudo-class.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon javascript"></span>
+    <h2 class="post-title">How to Extend a Javascript Pseudo Class</h2>
+    <p class="post-meta">Jan 2, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>I recently built an HTML 5 Canvas project using <a href="http://www.createjs.com/#!/CreateJS">CreateJS</a> which I ended up really enjoying since I spent a few years of my career building Adobe Flash apps. I remember thinking “Why doesn’t Adobe take Flash/ActionScript 3 and write a version that works with HTML5 Canvas/Javascript?” we’ll they did (sort of). In a future post, I hope to write more about that project, but this post is more on how to extend JavaScript classes since that’s what you do with the CreateJS framework.</p>
+
+<p>We all use jQuery and that’s awesome, so you don’t really need to worry about JavaScript pseudo classes, but once in a while you may find yourself writing plain JavaScript (or at least using a different framework than jQuery). Since JavaScript’s biggest downfall is that there isn’t a built in class structure we are left with pseudo classes.</p>
+
+<p>This is all explained very well in David Shariff’s blog that can be found here:
+<a href="http://davidshariff.com/blog/javascript-inheritance-patterns/">davidshariff.com/blog/javascript-inheritance-patterns/</a> so, I’m just going to show how to used the Pseudoclassical pattern like I did with CreateJS.</p>
+
+<p>In CreateJS, you have a bunch of core JavaScript pseudo classes already available to you, and all you need to do is extend the correct ones for you app’s needs. This functionality can be used without CreateJS since it’s all basic javascript, for example:</p>
+
+<pre><code class="language-javascript">(function() {
+    var Car = function(color) {
+        this._wheels = 4;
+        this._condition = 'good';
+
+        //this will serve as our 'super()' method
+        this.initialize(color);
+    }
+    Car.prototype.initialize = function(color) {
+        this._color = color;
+        //...
+    }
+    Car.prototype.drive = function(speed) {
+        //...
+    }
+    //setup a namespace if you want
+    window.Car = Car;
+}());
+
+//create a car and drive
+var myCar = new Car(#bada55);
+myCar.drive(90);</code></pre>
+
+<p>Now we end up with the class ‘Car’ that we can re-use in our JavaScript application. Now, we have a ‘Truck’ object that is a lot like car so we should extend the ‘Car’ class to reduce code. How do we do this with Javascript since you can’t just say:</p>
+
+<pre><code class="language-javascript">function Truck() extends Car() {
+    //call car constructor
+    super(color);
+
+    //set variables for truck
+    this._type = 'pickup';
+} 
+</code></pre>
+
+<p>This is where we use the prototype attribute, but we can’t just say Truck.prototype = Car.prototype because now any new methods on Truck will be passed back to Car. The trick is to pass a unique reference for a Car to a temp object and then add to it. So, now the ‘Truck’ class ends up looking like this:</p>
+
+<pre><code class="language-javascript">(function() {
+    var Truck = function(color) {
+        this._type = 'pickup';
+
+        this.initialize(color);
+    }
+    //here we are creating a Car and passing a unique reference 
+    //to the var 'tmp'
+    var tmp = Truck.prototype = new Car();
+
+    //now we need to save a reference to the parent 
+    //initialize method (like calling 'super()' in other languages)
+    Truck.prototype.Car_initialize = tmp.initialize;
+    
+    //now create a initialize() method for truck that calls 
+    //Cars initialize() method
+    Truck.prototype.initialize = function(color) {
+        this.Car_initialize(color);
+        //...
+    };
+    
+    //add a new method only to the 'Truck' class
+    Truck.prototype.tow = function(weight) {
+        //...
+    }
+    //setup a namespace if you want
+    window.Truck = Truck;
+}());
+</code></pre>
+
+<p>I thought this was slick, and you can even move this into a method like so:</p>
+
+<pre><code class="language-javascript">var classExtend = function(childClass, parentClass) {
+    var tmpObj = function() { };
+    tmpObj.prototype = new parentClass();
+    childClass.prototype = new tmpObj();
+    childClass.prototype.constructor = childClass;
+};
+
+var Car = function() {
+    this._type = 'car';
+    //...
+}
+var Truck = function() {
+    this._type = 'truck';
+    //...
+}
+Truck.prototype.tow = function(weight) { }
+
+//extend the car class
+classExtend(Truck, Car);
+</code></pre>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/ruby-script-for-sorting-photos-by-year-and-month.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/using-flash-sharedobject-to-store-user-info.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

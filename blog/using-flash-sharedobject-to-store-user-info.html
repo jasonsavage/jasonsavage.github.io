@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Using Flash Shared Object to Store User Info</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/using-flash-sharedobject-to-store-user-info.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon flash"></span>
+    <h2 class="post-title">Using Flash Shared Object to Store User Info</h2>
+    <p class="post-meta">Jan 2, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>Browser cookies are great, but can be limiting and easily lost (or cleared). Some browsers will auto clear cookies when they are closed based on user settings. Recently, while building a <a href="http://www.facebook.com">Facebook</a> page tab application I ran into an issue where Safari wouldn’t keep any cookie data because of iframe security. This ended up being painful and while banging my head on my desk I thought of something. Why not use at tiny flash swf to save cookie data? I know flash is not very popular but it’s still installed on most people’s browser even if they don’t know it.</p>
+
+<p>Here is the ActionScript 3 code to get your very own 10px by 10px flash swf to save cookie data with.</p>
+
+<pre><code class="language-actionscript">//create a file named FlashCookies.as as add the following code to it:
+package
+{
+ import flash.display.Sprite;
+ import flash.events.Event;
+ import flash.events.TimerEvent;
+ import flash.external.ExternalInterface;
+ import flash.net.SharedObject;
+ import flash.utils.Timer;
+ 
+ [SWF(width = "10", height = 10, fps = 10)]
+ 
+ public class FlashCookies extends Sprite 
+ {
+  
+  private var cookieName:String;
+  private var readyTimer:Timer;
+  
+  public function Main():void 
+  {
+   if (stage) init();
+   else addEventListener(Event.ADDED_TO_STAGE, init);
+  }
+  
+  private function init(e:Event = null):void 
+  {
+   removeEventListener(Event.ADDED_TO_STAGE, init);
+   
+   cookieName = loaderInfo.parameters['c'];
+   
+   
+   if (ExternalInterface.available 
+     &amp;&amp; cookieName != null 
+     &amp;&amp; cookieName.length &gt; 0)
+   {
+    try 
+    { 
+     // This calls the isContainerReady() method, which in turn calls 
+     // the container to see if Flash Player has loaded and the container 
+     // is ready to receive calls from the SWF. 
+     var containerReady:Boolean = isContainerReady(); 
+     if (containerReady) 
+     { 
+      // If the container is ready, register the SWF's functions. 
+      setupCallbacks(); 
+     } 
+     else 
+     { 
+      // If the container is not ready, set up a Timer to call the 
+      // container at 100ms intervals. Once the container responds that 
+      // it's ready, the timer will be stopped. 
+      readyTimer = new Timer(100); 
+      readyTimer.addEventListener(TimerEvent.TIMER, timerHandler); 
+      readyTimer.start(); 
+     } 
+    } 
+    catch(e:Error) { }
+    
+   }
+   else 
+   { 
+    trace("External interface is not available for this container."); 
+   } 
+   
+  }
+  
+  private function setupCallbacks():void
+  {
+   //add callbacks
+   ExternalInterface.addCallback('getCookie', getSOCookieData);
+   ExternalInterface.addCallback('setCookie', setSOCookieData);
+   ExternalInterface.addCallback('clearCookie', clearSOcookieData);
+   
+   //notify javascript that swf is ready
+   ExternalInterface.call('flash_setSWFIsReady');
+  }
+  
+  private function isContainerReady():Boolean 
+  { 
+   var result:Boolean = ExternalInterface.call("flash_isJSReady"); 
+   return result; 
+  }
+    
+  public function getSOCookieData(key:String):String
+  {
+   var so:SharedObject = SharedObject.getLocal( cookieName, "/" );
+   if ( so.data.hasOwnProperty(key) )
+    return so.data[key];
+   return null;
+  }
+  
+  public function setSOCookieData(key:String, value:String):void
+  {
+   var so:SharedObject = SharedObject.getLocal( cookieName, "/" );
+   so.data[key] = value;
+   so.flush();
+  }
+  
+  public function clearSOcookieData():void
+  {
+   var so:SharedObject = SharedObject.getLocal( cookieName, "/" );
+   so.clear();
+  }
+  
+  //Event handlers
+  private function timerHandler(event:TimerEvent):void 
+  { 
+   // Check if the container is now ready. 
+   var isReady:Boolean = isContainerReady(); 
+   if (isReady) 
+   { 
+    // If the container has become ready, we don't need to check anymore, 
+    // so stop the timer. 
+    readyTimer.stop(); 
+    readyTimer.removeEventListener(TimerEvent.TIMER, timerHandler);
+    readyTimer = null;
+    
+    // Set up the ActionScript methods that will be available to be 
+    // called by the container. 
+    setupCallbacks(); 
+   } 
+  }
+ }
+ 
+}
+</code></pre>
+
+<p>Now you will need to compile this it into a swf with either <a href="https://creative.adobe.com/products/flash">Adobe Flash</a> or <a href="http://www.flashdevelop.org">Flash Develop</a>. Along with this generated swf, you’ll also need a bit of JavaScript, which isn’t much if you use <a href="http://code.google.com/p/swfobject/">swfobject</a>.</p>
+
+<pre><code class="language-javascript">//flash communication methods
+var hasFlash = false;
+var jsReady = false;
+var swfReady = false;
+
+window.flash_isJSReady = function()
+{
+    return jsReady;
+};
+
+window.flash_setSWFIsReady = function()
+{
+    swfReady = true;
+};
+
+function getSwf()
+{
+    if (navigator.appName.indexOf("Microsoft") !== -1) 
+        return window["FlashCookies"]; 
+    return document["FlashCookies"]; 
+} 
+
+$(document).on('ready', function()
+{ 
+    //embed flash on page
+    var flashvars = {
+        //add a custom name for this cookie
+        c : 'my_so_cookie'
+    };
+    var params = {
+        allowScriptAccess: "always",
+        wmode: "transparent"
+    };
+    var attributes = {
+        id:"FlashCookies"
+    };
+    swfobject.embedSWF("FlashCookies.swf", "altContent", 10, 10, "9.0.0", null, flashvars, params, attributes);
+
+    // Record that JavaScript is ready to go. 
+    jsReady = true; 
+} 
+</code></pre>
+
+<p>And the html would just be a div with the id “altContent” (or whatever you want, just make sure to update the <strong>swfobject.embedSWF()</strong> call with the matching value.</p>
+
+<p>Once all this is setup, all you need to do is call** getSwf().setCookie(“email”,”john@home.net”);** and the flash cookie is saved and much harder to clear. The next time that user comes to your site, you can check the cookie <strong>getSwf().getCookie(“email”);</strong>.</p>
+
+<p>Nice huh? Also a lot of banner ads do this, which makes me a bit mad since I think it’s one of the many reason people dislike Flash , but that’s for another post.</p>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/how-to-extend-a-javascript-pseudo-class.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/ruby-script-to-execute-google-closure-compiler-to-compress-your-javascript.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

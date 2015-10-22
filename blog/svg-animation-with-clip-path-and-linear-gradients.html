@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>SVG Animation With Clip Paths and Linear Gradients</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/svg-animation-with-clip-path-and-linear-gradients.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon html"></span>
+    <h2 class="post-title">SVG Animation With Clip Paths and Linear Gradients</h2>
+    <p class="post-meta">May 4, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>One of our clients decided to update their logo from a circle to more of a heart. Currently, on the about us page of their website, they have a large version of their logo that spins slowly and when you rollover (or swipe/tap) each color in the logo information appears describing their products. One of our designers and I, sat down to discuss what we could do with a heart shaped logo because having it spin looked weird. We finally came up with a subtle shine effect on the colors, which at first, I thought would be easy since I’ve done it before with flash. I came to find out that there was a little more to it then I originally thought.</p>
+
+<p>I decided to try the animation with SVG. After reading up on <a href="https://developer.mozilla.org/en-US/docs/Web/SVG">SVG graphics and animations</a>, came up with the following which turned out great:</p>
+
+<svg width="486" height="446" viewbox="0 0 486 446" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <lineargradient id="gradGold" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="30%" style="stop-color:#FFC423; stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#ffe191; stop-opacity:1" />
+          <stop offset="70%" style="stop-color:#FFC423; stop-opacity:1" />
+        </lineargradient>
+        <lineargradient id="gradGreen" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="30%" style="stop-color:#6EB43F; stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#b6d99f; stop-opacity:1" />
+          <stop offset="70%" style="stop-color:#6EB43F; stop-opacity:1" />
+        </lineargradient>
+        <lineargradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="30%" style="stop-color:#0083C8; stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#7fc1e3; stop-opacity:1" />
+          <stop offset="60%" style="stop-color:#0083C8; stop-opacity:1" />
+        </lineargradient>
+        <clippath id="stripGold">
+            <path id="gold" d="M446.57,41.168C423.02,17.616,391.671,4.649,358.286,4.649c-48.132,0-92.324,26.575-109.165,65.029
+                c4.789,12.858,8.407,27.797,10.561,45.021c20.016-23.047,48.303-36.757,76.264-36.757c22.903,0,43.24,9.276,55.79,25.453
+                c15.265,19.667,18.778,47.843,10.161,81.476c-12.302,48-75.228,140.375-158.431,174.586c1.186-0.056,32.986,0.218,52.238-4.798
+                c76.667-20,145.737-77.567,163.532-111.797C490.488,182.738,503.576,98.174,446.57,41.168z" />
+        </clippath>
+        
+        <clippath id="stripGreen">
+            <path id="green" d="M72.603,317.736C71.87,316.727,74.997,320.537,72.603,317.736c-9.437-11.037-34.769-36.559-46.616-59.583
+                c-26.257-51.028-38.794-129.458-7.6-189.644C38.157,30.357,72.942,6.779,118.972,0.328C122.661,0.096,126.004,0,129.237,0
+                c51.637,0,111.506,26.183,122.377,145.724l0,0c-27.225-57.018-76.498-80.988-127.588-66.646
+                c-27.492,7.715-51.651,35.282-63.729,67.576C42.154,195.165,42.749,259.684,72.603,317.736L72.603,317.736z" />
+        </clippath>
+        
+        <clippath id="stripBlue">
+            <path id="blue" d="M239.213,444.16c-20.272,0-34.196-9.124-51.833-20.675c-3.391-2.22-6.932-4.544-10.712-6.925
+                c-23.878-15.024-70.44-60.928-79.911-74.206c-29.36-41.149-52.701-155.486-23.961-195.538l6.773-9.452l0.78,11.605
+                c2.91,43.398,13.082,63.153,31.555,99.008c25.842,50.167,83.813,112.732,136.458,123.587
+                c58.789-2.132,108.227-19.724,179.925-72.458l0,0c-26.7,36.129-99.081,101.332-136.808,125.679
+                C277.495,433.81,258.921,444.16,239.213,444.16z" />
+        </clippath>
+    </defs>
+
+    <rect x="-486" y="0" width="972" height="400" clip-path="url(#stripGold)" fill="url(#gradGold)">
+        <animate attributename="x" attributetype="XML" from="-486" to="243" begin="2s" dur="8s" calcmode="paced" repeatcount="indefinite" />
+    </rect>
+
+    <rect x="-650" y="0" width="972" height="400" clip-path="url(#stripGreen)" fill="url(#gradGreen)">
+        <animate attributename="x" attributetype="XML" from="-650" to="0" dur="8s" begin="0s" calcmode="paced" repeatcount="indefinite" />
+    </rect>
+    
+    <rect x="-540" y="100" width="972" height="400" clip-path="url(#stripBlue)" fill="url(#gradBlue)">
+        <animate id="animaRectBlue" attributename="x" attributetype="XML" from="-540" to="50" begin="1s" dur="8s" calcmode="paced" repeatcount="indefinite" />
+    </rect>
+</svg>
+<p><br />
+<br /></p>
+
+<p>Now, if you can see the animation (more on that in a sec), what is happening is that I have 3 wide &lt;rect /&gt; tags each with a &lt;linearGradient /&gt; set as there fill. Each rectangle has an &lt;animation /&gt; tag that slowly animates it from left to right and then repeats. I also have 3 &lt;clipPaths /&gt; tags that each contain a &lt;path /&gt; tag whose “d” attribute is a bunch of draw commands I exported from illustrator. This is one of my first times working with SVG graphics and I really enjoyed it. I can’t wait until it is more widely supported because it reminds me of <a href="http://www.adobe.com/products/flex.html">Flex</a> and <a href="https://wikidocs.adobe.com/wiki/display/Flex/MXML">MXML</a>.
+That last sentence about it being more <a href="http://caniuse.com/#cats=SVG">widely supported</a> is where I am now. I have a backup image setup as a fallback for users whose browsers don’t support SVG, ClipPath, and SMIL animations, but the account managers are a little concerned that the client is going to be upset since we made a big deal about this.</p>
+
+<p>So, today I’m going to revisit one of the ideas of using the canvas to draw this animation. It’s a bit more supported right now, but before, I was having trouble getting the vector drawing correct since each part of the logo is an irregular shape. I’m thinking either using <a href="http://www.createjs.com/#!/EaselJS">EaselJS</a> (since I’ve used it before) or maybe <a href="http://fabricjs.com/">FabricJS</a> (since I think it might be more popular).</p>
+
+<p>Here ia the raw html code for the above image:</p>
+
+<pre><code class="language-html">&lt;svg width=&quot;486&quot; height=&quot;446&quot; viewBox=&quot;0 0 486 446&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+    &lt;defs&gt;
+        &lt;linearGradient id=&quot;gradGold&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#FFC423; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#ffe191; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#FFC423; stop-opacity:1&quot; /&gt;
+        &lt;/linearGradient&gt;
+        &lt;linearGradient id=&quot;gradGreen&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#6EB43F; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#b6d99f; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#6EB43F; stop-opacity:1&quot; /&gt;
+        &lt;/linearGradient&gt;
+        &lt;linearGradient id=&quot;gradBlue&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#0083C8; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#7fc1e3; stop-opacity:1&quot;/&gt;
+          &lt;stop offset=&quot;60%&quot; style=&quot;stop-color:#0083C8; stop-opacity:1&quot; /&gt;
+        &lt;/linearGradient&gt;
+        &lt;clipPath id=&quot;stripGold&quot;&gt;
+            &lt;path id=&quot;gold&quot; d=&quot;M446.57,41.168C423.02,17.616,391.671,4.649,358.286,4.649c-48.132,0-92.324,26.575-109.165,65.029
+                c4.789,12.858,8.407,27.797,10.561,45.021c20.016-23.047,48.303-36.757,76.264-36.757c22.903,0,43.24,9.276,55.79,25.453
+                c15.265,19.667,18.778,47.843,10.161,81.476c-12.302,48-75.228,140.375-158.431,174.586c1.186-0.056,32.986,0.218,52.238-4.798
+                c76.667-20,145.737-77.567,163.532-111.797C490.488,182.738,503.576,98.174,446.57,41.168z&quot;/&gt;
+        &lt;/clipPath&gt;
+        
+        &lt;clipPath id=&quot;stripGreen&quot;&gt;
+            &lt;path id=&quot;green&quot; d=&quot;M72.603,317.736C71.87,316.727,74.997,320.537,72.603,317.736c-9.437-11.037-34.769-36.559-46.616-59.583
+                c-26.257-51.028-38.794-129.458-7.6-189.644C38.157,30.357,72.942,6.779,118.972,0.328C122.661,0.096,126.004,0,129.237,0
+                c51.637,0,111.506,26.183,122.377,145.724l0,0c-27.225-57.018-76.498-80.988-127.588-66.646
+                c-27.492,7.715-51.651,35.282-63.729,67.576C42.154,195.165,42.749,259.684,72.603,317.736L72.603,317.736z&quot;/&gt;
+        &lt;/clipPath&gt;
+        
+        &lt;clipPath id=&quot;stripBlue&quot;&gt;
+            &lt;path id=&quot;blue&quot; d=&quot;M239.213,444.16c-20.272,0-34.196-9.124-51.833-20.675c-3.391-2.22-6.932-4.544-10.712-6.925
+                c-23.878-15.024-70.44-60.928-79.911-74.206c-29.36-41.149-52.701-155.486-23.961-195.538l6.773-9.452l0.78,11.605
+                c2.91,43.398,13.082,63.153,31.555,99.008c25.842,50.167,83.813,112.732,136.458,123.587
+                c58.789-2.132,108.227-19.724,179.925-72.458l0,0c-26.7,36.129-99.081,101.332-136.808,125.679
+                C277.495,433.81,258.921,444.16,239.213,444.16z&quot;/&gt;
+        &lt;/clipPath&gt;
+    &lt;/defs&gt;
+
+    &lt;rect x=&quot;-486&quot; y=&quot;0&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripGold)&quot; fill=&quot;url(#gradGold)&quot;&gt;
+        &lt;animate attributeName=&quot;x&quot; attributeType=&quot;XML&quot; from=&quot;-486&quot; to=&quot;243&quot; begin=&quot;2s&quot; dur=&quot;8s&quot; calcMode=&quot;paced&quot; repeatCount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+
+    &lt;rect x=&quot;-650&quot; y=&quot;0&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripGreen)&quot; fill=&quot;url(#gradGreen)&quot;&gt;
+        &lt;animate attributeName=&quot;x&quot; attributeType=&quot;XML&quot; from=&quot;-650&quot; to=&quot;0&quot; dur=&quot;8s&quot; begin=&quot;0s&quot; calcMode=&quot;paced&quot; repeatCount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+    
+    &lt;rect x=&quot;-540&quot; y=&quot;100&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripBlue)&quot; fill=&quot;url(#gradBlue)&quot;&gt;
+        &lt;animate id=&quot;animaRectBlue&quot; attributeName=&quot;x&quot; attributeType=&quot;XML&quot; from=&quot;-540&quot; to=&quot;50&quot; begin=&quot;1s&quot; dur=&quot;8s&quot; calcMode=&quot;paced&quot; repeatCount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+&lt;/svg&gt;
+</code></pre>
+
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/combining-php-html-templates-with-associative-array-models.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/moving-my-svg-animation-to-canvas-with-easeljs.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

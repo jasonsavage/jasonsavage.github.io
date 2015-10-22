@@ -1,4 +1,4 @@
-/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+aspnet+csharp+coffeescript+ruby+dart+http+less+php+php-extras+python+jsx+sass+scss+sql+typescript+yaml */
+/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+actionscript+aspnet+bash+c+csharp+cpp+coffeescript+ruby+dart+gherkin+git+go+http+java+less+objectivec+php+php-extras+python+jsx+sass+scss+sql+swift+typescript+yaml&plugins=line-numbers */
 /**
  * prism.js default theme for JavaScript, CSS and HTML
  * Based on dabblet (http://dabblet.com)
@@ -136,3 +136,43 @@ pre[class*="language-"] {
 	cursor: help;
 }
 
+pre.line-numbers {
+	position: relative;
+	padding-left: 3.8em;
+	counter-reset: linenumber;
+}
+
+pre.line-numbers > code {
+	position: relative;
+}
+
+.line-numbers .line-numbers-rows {
+	position: absolute;
+	pointer-events: none;
+	top: 0;
+	font-size: 100%;
+	left: -3.8em;
+	width: 3em; /* works for line-numbers below 1000 lines */
+	letter-spacing: -1px;
+	border-right: 1px solid #999;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+}
+
+	.line-numbers-rows > span {
+		pointer-events: none;
+		display: block;
+		counter-increment: linenumber;
+	}
+
+		.line-numbers-rows > span:before {
+			content: counter(linenumber);
+			color: #999;
+			display: block;
+			padding-right: 0.8em;
+			text-align: right;
+		}

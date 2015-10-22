@@ -8,7 +8,7 @@
 -->
 
 <head>
-    <title>Moving to Raleigh to work for Infusion</title>
+    <title>Date Strings from Twitter & Facebook Invaild? (IE & Safari)</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="My everyday struggles with the web">
     <meta name="keywords" content="" />
@@ -32,7 +32,7 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
     <meta name="viewport" content="width=device-width">
 
-    <link rel="canonical" href="http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html">
+    <link rel="canonical" href="http://locahost:4000/blog/date-strings-from-twitter-and-facebook-invalid.html">
 </head>
 
 
@@ -52,25 +52,59 @@
     <div class="page-content">
         <article id="main">
   <header class="special container">
-    <span class="icon suitcase"></span>
-    <h2 class="post-title">Moving to Raleigh to work for Infusion</h2>
-    <p class="post-meta">Jun 4, 2014</p>
+    <span class="icon javascript"></span>
+    <h2 class="post-title">Date Strings from Twitter & Facebook Invaild? (IE & Safari)</h2>
+    <p class="post-meta">May 8, 2014</p>
   </header>
 
   <section class="style4 wrapper container">
-    <p>The time has come for me to pack my bags and move south. I’ve been in Pittsburgh, PA since I graduated from <a href="http://www.edinboro.edu/">Edinboro University</a> in 2003, and even a few years before college. Living and working in the burgh, I’ve gained a lot of experience and had the pleasure working with many really talented people. But, alas, the weather has finally gotten to my wife and me. Plus, my son is starting 2nd grade in the fall! and I fear that if we don’t move soon, we’ll never leave.</p>
+    <p>Just learned about this yesterday. It seems that if you pass the date string that is returned from Twitter and/or Facebook to the javascript Date() constructor, in IE (and Safari), it shows it as an invalid date.</p>
 
-<p>I was offered an Interactive Developer role with a big New York company called <a href="http://www.infusion.com/">Infusion</a>. Infusion is opening an office in Raleigh, NC and I’ll be part of the many new hires for that team.</p>
+<p>Twitter returns the “created_time” as something like this: Thu May 01 13:57:04 +0000 2014, which is shown as “Invalid Date” in IE.</p>
+<pre><code class="language-javascript">//created_time = Thu May 01 13:57:04 +0000 2014
+var date = new Date( jsonData.created_time );
+console.log( date.toString() );
+// = IE 9 &amp; 10: 'Invalid Date' 
+// = Chrome:    'Mon May 05 2014 14:50:00 GMT-0400 (Eastern Daylight Time)'
+// = FireFox:   'Mon May 05 2014 14:50:00 GMT-0400 (Eastern Standard Time)'
+// = Safari:    'Mon May 05 2014 14:50:00 GMT-0400 (Eastern Daylight Time)'
+</code></pre>
 
-<p>It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?</p>
+<p>For Facebook, the ‘created_time’ value is something like: 2014-04-17T12:59:04+0000, which is shown as “Invalid Date” in IE and Safari.</p>
+
+<pre><code class="language-javascript">//created_time = 2014-04-17T12:59:04+0000
+var date = new Date( jsonData.created_time ); 
+console.log( date.toString() );
+// = IE 9 &amp; 10: 'Invalid Date' 
+// = Chrome:    'Thu Apr 17 2014 08:59:04 GMT-0400 (Eastern Daylight Time)'
+// = FireFox:   'Thu Apr 17 2014 08:59:04 GMT-0400 (Eastern Standard Time)'
+// = Safari:    'Invalid Date'
+</code></pre>
+
+<p>What fixed the problem, for now, was to do a little manipulation on the date string before it is passed it to the Date() constructor.</p>
+<pre><code class="language-javascript">//twitter = 'Thu May 01 13:57:04 +0000 2014'
+//facebook = '2014-04-17T12:59:04+0000'
+    
+var created = facebook.created_time;
+if( isFacebook ) {
+    //this fixes the issue in IE and Safari, and still works in Firefox and Chrome even though they don't need it.
+    created = created.replace(/-/g, '/').replace(/T/, ' ').replace(/\+/, ' +');
+}
+else if( isTwitter ) {
+    //this is only an issue in IE, so we can just do a quick test and fix the issue.
+    if( navigator.userAgent.match(/MSIE\s([^;]*)/) )
+        created = created .replace(/( \+)/, ' UTC$1');
+}
+var date = new Date( created );
+</code></pre>
 
   </section>
 
     <footer>
         
-        <a href="/blog/date-strings-from-twitter-and-facebook-invalid.html" class="post-prev">&larr; Previous post</a> 
+        <a href="/blog/moving-my-svg-animation-to-canvas-with-easeljs.html" class="post-prev">&larr; Previous post</a> 
         
-        <a href="/blog/angularjs-custom-data-table-example.html" class="post-next">Next post &rarr;</a> 
+        <a href="/blog/moving-to-raleigh-to-work-for-infusion.html" class="post-next">Next post &rarr;</a> 
     </footer>
 </article>
 

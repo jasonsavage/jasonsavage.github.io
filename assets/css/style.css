@@ -437,6 +437,43 @@
 			margin-top: -10px;
 		}
 
+		.icon.html {
+			background: url(images/html5.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -20px;
+		}
+
+		.icon.css {
+			background: url(images/css3.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -10px;
+		}
+		.icon.ruby {
+			background: url(images/ruby.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -10px;
+		}
+		.icon.flash {
+			background: url(images/flash.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -10px;
+		}
+		.icon.sql {
+			background: url(images/sql.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -20px;
+		}
+		.icon.suitcase {
+			background: url(images/suitcase.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -20px;
+		}
+		.icon.rocket {
+			background: url(images/rocket.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -20px;
+		}
+
 /* List */
 
 	ol.default {

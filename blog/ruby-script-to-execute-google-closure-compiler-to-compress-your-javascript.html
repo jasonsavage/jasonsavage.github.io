@@ -8,7 +8,7 @@
 -->
 
 <head>
-    <title>Moving to Raleigh to work for Infusion</title>
+    <title>Ruby Script to execute Google Closure Compiler to compress your JavaScript</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="My everyday struggles with the web">
     <meta name="keywords" content="" />
@@ -32,7 +32,7 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
     <meta name="viewport" content="width=device-width">
 
-    <link rel="canonical" href="http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html">
+    <link rel="canonical" href="http://locahost:4000/blog/ruby-script-to-execute-google-closure-compiler-to-compress-your-javascript.html">
 </head>
 
 
@@ -52,25 +52,79 @@
     <div class="page-content">
         <article id="main">
   <header class="special container">
-    <span class="icon suitcase"></span>
-    <h2 class="post-title">Moving to Raleigh to work for Infusion</h2>
-    <p class="post-meta">Jun 4, 2014</p>
+    <span class="icon ruby"></span>
+    <h2 class="post-title">Ruby Script to execute Google Closure Compiler to compress your JavaScript</h2>
+    <p class="post-meta">Jan 28, 2014</p>
   </header>
 
   <section class="style4 wrapper container">
-    <p>The time has come for me to pack my bags and move south. I’ve been in Pittsburgh, PA since I graduated from <a href="http://www.edinboro.edu/">Edinboro University</a> in 2003, and even a few years before college. Living and working in the burgh, I’ve gained a lot of experience and had the pleasure working with many really talented people. But, alas, the weather has finally gotten to my wife and me. Plus, my son is starting 2nd grade in the fall! and I fear that if we don’t move soon, we’ll never leave.</p>
+    <p>I’ve been using Google’s <a href="http://code.google.com/p/closure-compiler">Closure Compiler</a> to compress all the custom JavaScript I’ve been writing in my projects at work for some time now. Recently, I created a small wrapper script in ruby that will collect all the scripts in a folder and write them into one compressed application.min.js file.</p>
 
-<p>I was offered an Interactive Developer role with a big New York company called <a href="http://www.infusion.com/">Infusion</a>. Infusion is opening an office in Raleigh, NC and I’ll be part of the many new hires for that team.</p>
+<p>With the script below, just set the #config params and point it at your JavaScript source folder. If you create a file called application.js in your source folder, it will be the first file that is written in the final file.</p>
 
-<p>It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?</p>
+<pre><code class="language-ruby">puts 'Google Closure Compiler';
+puts 'Concatenate and minify all JavaScript in src directory';
+
+# config 
+closure  = 'C:/closure-compiler/compiler.jar'
+src_dir  = '../assets/js/src'
+src_dest = '../assets/js/application.min.js'
+
+
+# load all files from src_dir
+files_arr = Dir.glob(File.join(src_dir, "*.js"));
+
+# apply sort order so application is first
+files_arr.sort! do |file_a, file_b|
+  
+  if File.basename(file_a) == "application.js" then
+    -1
+  else
+    0
+  end
+end
+
+# compile all application src code
+cmd = "java -jar #{closure} --js " + files_arr.join(" ") + " --js_output_file #{src_dest}"
+
+puts "running: #{cmd}"
+
+IO.popen(cmd);
+</code></pre>
+
+<p>Along with this script, here is a version for all the vendor scripts in your project. Point this at your ‘vendor’ or ‘libs’ folder and it will compress and create a *.min.js file for each script in that folder.</p>
+
+<pre><code class="language-ruby">puts 'Google Closure Compiler';
+puts 'Minifying all vendor src code';
+
+# config 
+closure  = 'C:/closure-compiler/compiler.jar'
+src_dir  = '../assets/js/vendor'
+src_dest = '../assets/js/vendor'
+
+# compile all vendor src code
+Dir.glob(File.join(src_dir, "*.js")).each do |f|
+  
+  unless f.include? '.min.js'
+    
+    name = File.basename f
+    new_name = name.gsub(/.js/, '.min.js');
+  
+    cmd = "java -jar #{closure} --js #{src_dir}/#{name} --js_output_file #{src_dest}/#{new_name}"
+ puts "running: #{cmd}"
+    IO.popen(cmd);
+    
+  end
+end
+</code></pre>
 
   </section>
 
     <footer>
         
-        <a href="/blog/date-strings-from-twitter-and-facebook-invalid.html" class="post-prev">&larr; Previous post</a> 
+        <a href="/blog/using-flash-sharedobject-to-store-user-info.html" class="post-prev">&larr; Previous post</a> 
         
-        <a href="/blog/angularjs-custom-data-table-example.html" class="post-next">Next post &rarr;</a> 
+        <a href="/blog/introducing-the-grunt-namespacer-task.html" class="post-next">Next post &rarr;</a> 
     </footer>
 </article>
 

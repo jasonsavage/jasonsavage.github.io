@@ -5,9 +5,77 @@
     <description>My everyday struggles with the web</description>
     <link>http://locahost:4000/</link>
     <atom:link href="http://locahost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 21 Oct 2015 16:49:43 -0400</pubDate>
-    <lastBuildDate>Wed, 21 Oct 2015 16:49:43 -0400</lastBuildDate>
+    <pubDate>Thu, 22 Oct 2015 16:30:53 -0400</pubDate>
+    <lastBuildDate>Thu, 22 Oct 2015 16:30:53 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Moved My Blog To GitHub Using Jekyll And Prism</title>
+        <description>&lt;p&gt;A few days ago I decided that &lt;a href=&quot;https://www.blogger.com&quot;&gt;Blogger&lt;/a&gt; is just too hard to work with. It takes me so long to write a blog post that I either end up pasting a bunch of code into a post and calling it complete or not writing them. This frustration led me to start exploring what other people are using for their blogs.&lt;/p&gt;
+
+&lt;p&gt;I’ve used &lt;a href=&quot;https://wordpress.com/&quot;&gt;Wordpress&lt;/a&gt; before and on many hosting site it can be installed with a click of a button. That’s great and there are tons of themes out there, but when you get into it, I still find it hard to customize a theme. For one thing, there’s about a thousand PHP files to look through and edit after you install a theme.&lt;/p&gt;
+
+&lt;p&gt;This led me to &lt;a href=&quot;https://ghost.org/&quot;&gt;Ghost&lt;/a&gt; which looks awesome and easy to use, plus there hosting plan will take care of any setup needed. Ghost is a &lt;a href=&quot;https://nodejs.org&quot;&gt;nodejs&lt;/a&gt; based site which it promotes as making it lightning fast compared to other platforms. Unfortunately, a lot of basic web hosts don’t support nodejs sites, so if you decide to use your own web host you might run into some issues. I ended up not using Ghost because it’s not free. :)&lt;/p&gt;
+
+&lt;p&gt;Finally, I came across &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;. The difference with Jekyll is that it’s not really a blog site or platform like WordPress or Ghost, but a site generator. What is also neat is that it doesn’t use a database.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-do-you-write-posts&quot;&gt;How do you write posts?&lt;/h3&gt;
+&lt;p&gt;Since Jekyll is a site generator, you are free to build or download whatever html template you want. After you have your html code, you can start slicing it up and adding &lt;a href=&quot;http://liquidmarkup.org/&quot;&gt;liquid markup&lt;/a&gt; where ever you want your dynamic content to go. For all your posts, they go in the _posts folder (drafts go in the _drafts folder) and can be written using &lt;a href=&quot;https://daringfireball.net/projects/markdown/&quot;&gt;markdown&lt;/a&gt;. More on directory structure can be found here: &lt;a href=&quot;http://jekyllrb.com/docs/structure/&quot;&gt;jekyllrb.com/docs/structure&lt;/a&gt;. Then when you run &lt;strong&gt;jekyll build&lt;/strong&gt; from the command line, your static blog site is generated and put into the _site folder.&lt;/p&gt;
+
+&lt;p&gt;I can’t tell you how much nicer it is to be able to write your posts using markdown. The command &lt;strong&gt;jekyll server&lt;/strong&gt; with actually spin up a quick node server so you can preview your website at http://localhost:4000/ and it even watches for changes allowing you to edit the markdown, and instantly view the compiled output in your browser.&lt;/p&gt;
+
+&lt;p&gt;There are Jekyll themes out there and I ended up using one called &lt;a href=&quot;http://jekyllthemes.org/themes/twenty/&quot;&gt;Twenty by HTML5 UP&lt;/a&gt; from &lt;a href=&quot;http://jekyllthemes.org/&quot;&gt;jekyllthemes.org&lt;/a&gt; as a base layout for my blog. Downloading and looking at the template, I was able to easily tweak everything as I wanted because it’s just html. As for the formatting of my code samples, I’m using &lt;a href=&quot;http://prismjs.com/&quot;&gt;Prismjs&lt;/a&gt; which I discovered while viewing other popular blog sites. It is quite a step up from &lt;a href=&quot;http://alexgorbatchev.com/SyntaxHighlighter&quot;&gt;Syntax Highlighter&lt;/a&gt; that I was using on Blogger.&lt;/p&gt;
+
+&lt;h3 id=&quot;hosting-of-github&quot;&gt;Hosting of GitHub&lt;/h3&gt;
+&lt;p&gt;Maybe I’m late to the table on this but GitHub allows you to host your site from a public GitHub repository. Just create a new repo named username.github.io, where username is your username (or organization name) on GitHub. After that clone the repo to your computer, copy all your files that Jekyll has copied to the _site folder, run &lt;strong&gt;git push&lt;/strong&gt; and your site is live.&lt;/p&gt;
+
+&lt;h3 id=&quot;any-code-examples&quot;&gt;Any code examples?&lt;/h3&gt;
+&lt;p&gt;With all this I did have to figure out one thing and good old &lt;a href=&quot;http://stackoverflow.com/&quot;&gt;stackoverflow&lt;/a&gt; came to the rescue. The template I downloaded was for a whole site, but right now I only have a blog so I cut out everything but the blog page and made that my index.html page. The template was setup to display all blog entries with an excerpt and a read more link. This wasn’t going to work, I only wanted my most recent blog entry featured with navigation to all my other entries in a side bar. Being really new to Jekyll and the Liquid templating markup, I had no idea where to start.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, someone had already figured this out: 
+&lt;a href=&quot;http://stackoverflow.com/questions/19086284/jekyll-liquid-templating-how-to-group-blog-posts-by-year&quot;&gt;stackoverflow.com/questions/19086284/jekyll-liquid-templating-how-to-group-blog-posts-by-year&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is the code I ended up using from that post, and it worked quite nicely.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;#123;% for post in site.posts  %&amp;#125;
+    &amp;#123;% capture this_year %&amp;#125;&amp;#123;&amp;#123; post.date | date: &amp;quot;%Y&amp;quot; &amp;#125;&amp;#125;&amp;#123;% endcapture %&amp;#125;
+    &amp;#123;% capture this_month %&amp;#125;&amp;#123;&amp;#123; post.date | date: &amp;quot;%B&amp;quot; &amp;#125;&amp;#125;&amp;#123;% endcapture %&amp;#125;
+    &amp;#123;% capture next_year %&amp;#125;&amp;#123;&amp;#123; post.previous.date | date: &amp;quot;%Y&amp;quot; &amp;#125;&amp;#125;&amp;#123;% endcapture %&amp;#125;
+    &amp;#123;% capture next_month %&amp;#125;&amp;#123;&amp;#123; post.previous.date | date: &amp;quot;%B&amp;quot; &amp;#125;&amp;#125;&amp;#123;% endcapture %&amp;#125;
+
+    &amp;#123;% if forloop.first %&amp;#125;
+    &amp;lt;h2 id=&amp;quot;&amp;#123;&amp;#123; this_year &amp;#125;&amp;#125;-ref&amp;quot;&amp;gt;&amp;#123;&amp;#123;this_year&amp;#125;&amp;#125;&amp;lt;/h2&amp;gt;
+    &amp;lt;h3 id=&amp;quot;&amp;#123;&amp;#123; this_year &amp;#125;&amp;#125;-&amp;#123;&amp;#123; this_month &amp;#125;&amp;#125;-ref&amp;quot;&amp;gt;&amp;#123;&amp;#123; this_month &amp;#125;&amp;#125;&amp;lt;/h3&amp;gt;
+    &amp;lt;ul&amp;gt;
+    &amp;#123;% endif %&amp;#125;
+
+    &amp;lt;li&amp;gt;&amp;lt;a href=&amp;quot;&amp;#123;&amp;#123; post.url &amp;#125;&amp;#125;&amp;quot;&amp;gt;&amp;#123;&amp;#123; post.title &amp;#125;&amp;#125;&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+
+    &amp;#123;% if forloop.last %&amp;#125;
+    &amp;lt;/ul&amp;gt;
+    &amp;#123;% else %&amp;#125;
+        &amp;#123;% if this_year != next_year %&amp;#125;
+        &amp;lt;/ul&amp;gt;
+        &amp;lt;h2 id=&amp;quot;&amp;#123;&amp;#123; next_year &amp;#125;&amp;#125;-ref&amp;quot;&amp;gt;&amp;#123;&amp;#123;next_year&amp;#125;&amp;#125;&amp;lt;/h2&amp;gt;
+        &amp;lt;h3 id=&amp;quot;&amp;#123;&amp;#123; next_year &amp;#125;&amp;#125;-&amp;#123;&amp;#123; next_month &amp;#125;&amp;#125;-ref&amp;quot;&amp;gt;&amp;#123;&amp;#123; next_month &amp;#125;&amp;#125;&amp;lt;/h3&amp;gt;
+        &amp;lt;ul&amp;gt;
+        &amp;#123;% else %&amp;#125;
+            &amp;#123;% if this_month != next_month %&amp;#125;
+            &amp;lt;/ul&amp;gt;
+            &amp;lt;h3 id=&amp;quot;&amp;#123;&amp;#123; this_year &amp;#125;&amp;#125;-&amp;#123;&amp;#123; next_month &amp;#125;&amp;#125;-ref&amp;quot;&amp;gt;&amp;#123;&amp;#123; next_month &amp;#125;&amp;#125;&amp;lt;/h3&amp;gt;
+            &amp;lt;ul&amp;gt;
+            &amp;#123;% endif %&amp;#125;
+        &amp;#123;% endif %&amp;#125;
+    &amp;#123;% endif %&amp;#125;
+&amp;#123;% endfor %&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Thu, 22 Oct 2015 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</guid>
+        
+        
+      </item>
     
       <item>
         <title>Tips for building AngularJS forms with validation</title>
@@ -860,257 +928,331 @@ mainApp.controller(&#39;customAngularTableCtrl&#39;, function ($scope) {
       </item>
     
       <item>
-        <title>YouTube Browser-based Uploading with OAuth</title>
-        <description>&lt;p&gt;YouTube has changed over to OAuth for using their data API (API 3.0)&lt;br /&gt;
-&lt;a href=&quot;https://developers.google.com/youtube/v3/&quot;&gt;https://developers.google.com/youtube/v3/&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-Which is fine but it seems they haven’t move all of their code over to the new API or haven’t finished the docs for it yet, so this is sort of a missing manual for implementing the old API 2.0 Browser-based Uploading seen here:&lt;br /&gt;
-&lt;a href=&quot;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&quot;&gt;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h3&gt;Step 1&lt;i&gt;- register your app with Google&lt;/i&gt;&lt;/h3&gt;
-&lt;p&gt;If you are creating this for one of your brands you need to login/create a Google account for them. After you logged in, you’ll need to register your application by following the instructions found here:&lt;br /&gt;
-&lt;a href=&quot;https://developers.google.com/youtube/registering_an_application&quot;&gt;https://developers.google.com/youtube/registering_an_application&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-&lt;i&gt;- when you create a client ID, set application type to web application&lt;/i&gt;&lt;br /&gt;
-&lt;i&gt;- redirect url can be this: http://localhost/oauth2callback, you only need it once&lt;/i&gt;&lt;br /&gt;
-&lt;br /&gt;
-You will also need to get a developer key from here: &lt;br /&gt;
-https://code.google.com/apis/youtube/dashboard/&lt;br /&gt;
-&lt;br /&gt;
-&lt;i&gt;The developer_key will not change so make sure you add this to your config file.&lt;/i&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;h3&gt;
-Step 2 &lt;i&gt;- get a refresh_token&lt;/i&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://developers.google.com/youtube/v3/guides/authentication&quot;&gt;https://developers.google.com/youtube/v3/guides/authentication&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-Now that you have your application registered, you should have an oAuth Client ID and Client Secret. Go ahead and save them into your project as a config variable since they don’t change, but you need them to get an &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt;. You now need to get an authorization code from the API. This is a one time use token that can be exchanged for an &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt; and &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt;. They call it a &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt; in the docs, but it’s really a long term token that doesn’t expire, which is what we want.&lt;br /&gt;
-&lt;br /&gt;
-The code url will be this:&lt;br /&gt;&lt;/p&gt;
-&lt;pre class=&quot;brush: php&quot;&gt;$url = &#39;https://accounts.google.com/o/oauth2/auth?&#39;;  
-$url .= &#39;client_id=&#39;   .   
-$url .= &#39;&amp;amp;redirect_uri=&#39; . urlencode(&#39;http://localhost/oauth2callback&#39;); //this is whatever url you set in the &quot;create client id dialog&quot;  
-$url .= &#39;&amp;amp;scope=&#39;    . urlencode(&#39;https://gdata.youtube.com&#39;);  
-$url .= &#39;&amp;amp;response_type=code&#39;;  
-$url .= &#39;&amp;amp;access_type=offline&#39;;  
-$url .= &#39;&amp;amp;approval_prompt=force&#39;;  
+        <title>Date Strings from Twitter &amp; Facebook Invaild? (IE &amp; Safari)</title>
+        <description>&lt;p&gt;Just learned about this yesterday. It seems that if you pass the date string that is returned from Twitter and/or Facebook to the javascript Date() constructor, in IE (and Safari), it shows it as an invalid date.&lt;/p&gt;
 
-&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-After you call this url you will be taken to a page and asked if your application is allowed to access this Google account. Click accept and you will be redirected to the url you specified earlier with the get variable &lt;span style=&quot;color: #0303FF;&quot;&gt;&lt;b&gt;code=…&lt;/b&gt;&lt;/span&gt; added to the end of the url. This is your one time use token so save it into your text editor while you create the next request. &lt;br /&gt;
-&lt;br /&gt;
-To make a request to get the &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt;, which is another one time thing, you can use PHP cURL code below or the command line.&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;Twitter returns the “created_time” as something like this: Thu May 01 13:57:04 +0000 2014, which is shown as “Invalid Date” in IE.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;//created_time = Thu May 01 13:57:04 +0000 2014
+var date = new Date( jsonData.created_time );
+console.log( date.toString() );
+// = IE 9 &amp;amp; 10: &#39;Invalid Date&#39; 
+// = Chrome:    &#39;Mon May 05 2014 14:50:00 GMT-0400 (Eastern Daylight Time)&#39;
+// = FireFox:   &#39;Mon May 05 2014 14:50:00 GMT-0400 (Eastern Standard Time)&#39;
+// = Safari:    &#39;Mon May 05 2014 14:50:00 GMT-0400 (Eastern Daylight Time)&#39;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;pre class=&quot;brush: php&quot;&gt; //using PHP cUrl  
- $curl = curl_init( &#39;https://accounts.google.com/o/oauth2/token&#39; );  
- $post_fields = array(  
-   &#39;code&#39;     =&amp;gt; &#39;&#39;,  
-   &#39;client_id&#39;   =&amp;gt; &#39;&#39;,  
-   &#39;client_secret&#39; =&amp;gt; &#39;&#39;,  
-   &#39;redirect_uri&#39; =&amp;gt; &#39;http://localhost/oauth2callback&#39;, //this doesn&#39;t do anything, but it&#39;s validated so i needs to match what you&#39;ve been using  
-   &#39;grant_type&#39;  =&amp;gt; &#39;authorization_code&#39;  
- );  
+&lt;p&gt;For Facebook, the ‘created_time’ value is something like: 2014-04-17T12:59:04+0000, which is shown as “Invalid Date” in IE and Safari.&lt;/p&gt;
 
- curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);  
- curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);  
- curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
- curl_setopt($curl, CURLOPT_POST, 1);  
- curl_setopt($curl, CURLOPT_HEADER, 0);  
- curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post_fields));
-  
- curl_setopt($curl, CURLOPT_HTTPHEADER, array(  
-   &#39;Content-Type: application/x-www-form-urlencoded&#39;  
- )); 
- 
- //send request  
- $response = curl_exec($curl); 
- 
- print_r($response);  
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;//created_time = 2014-04-17T12:59:04+0000
+var date = new Date( jsonData.created_time ); 
+console.log( date.toString() );
+// = IE 9 &amp;amp; 10: &#39;Invalid Date&#39; 
+// = Chrome:    &#39;Thu Apr 17 2014 08:59:04 GMT-0400 (Eastern Daylight Time)&#39;
+// = FireFox:   &#39;Thu Apr 17 2014 08:59:04 GMT-0400 (Eastern Standard Time)&#39;
+// = Safari:    &#39;Invalid Date&#39;
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-If everything worked, you should get something like this back:&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-&lt;pre class=&quot;brush: js&quot;&gt;{  
-  &quot;access_token&quot; : &quot;ya29.AHES6ZTtm7SuokEB-RGtbBty9IIlNiP9-eNMMQKtXdMP3sfjL1Fc&quot;,  
-  &quot;token_type&quot; : &quot;Bearer&quot;,  
-  &quot;expires_in&quot; : 3600,  
-  &quot;refresh_token&quot; : &quot;1/HKSmLFXzqP0leUihZp2xUt3-5wkU7Gmu2Os_eBnzw74&quot;  
- }  
-&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-Bingo!, copy and pasted the &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt; into your config file. Like I said before, it doesn’t expire like the access_token will. You will use it to get a new &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt; each time your form loads. Using a token to get a token seems strange but it’s Google so I guess they know what they’re doing.&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-&lt;h3&gt;
-Step 3 - &lt;i&gt;post url and upload token&lt;/i&gt;&lt;/h3&gt;
-&lt;p&gt;We are back to this guide:&lt;br /&gt;
-&lt;a href=&quot;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&quot;&gt;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-You need to create a video object on the YouTube server to upload a video to. To do this, you’ll need to get an &lt;span style=&quot;color: #0303FF;&quot;&gt;upload_token&lt;/span&gt; and a &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; from the YouTube API.&lt;br /&gt;
-&lt;a href=&quot;http://gdata.youtube.com/action/GetUploadToken&quot;&gt;http://gdata.youtube.com/action/GetUploadToken&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-To create a video object, a video title and description along with some keywords and a category are required before can you get the &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; so, in my case, I just created temporary ones and updated them later.&lt;br /&gt;
-&lt;br /&gt;
-The category definitions can be found here:&lt;br /&gt;
-&lt;a href=&quot;http://gdata.youtube.com/schemas/2007/categories.cat&quot;&gt;http://gdata.youtube.com/schemas/2007/categories.cat&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;pre class=&quot;brush: php&quot;&gt;public function get_video_upload_info()  
-{  
-   //get youtube access token  
-   $access_token = $this-&amp;gt;get_access_token();  
-
-   //create a video obj with temp info  
-   $video_title  = &#39;Video Temp Title &#39; . rand(1, 9999);  
-   $video_desc   = &#39;Temp Desc&#39;;  
-   $video_keywords = &#39;facebook, contest&#39;;  
-
-   //setup request body as xml  
-   $xml_str = implode(&#39;&#39;, array(  
-     &#39;&amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;&#39;,  
-     &#39;&amp;lt;entry xmlns=&quot;http://www.w3.org/2005/Atom&quot; xmlns:media=&quot;http://search.yahoo.com/mrss/&quot; xmlns:yt=&quot;http://gdata.youtube.com/schemas/2007&quot;&amp;gt;&#39;,  
-       &#39;&amp;lt;media:group&amp;gt;&#39;,  
-         &#39;&amp;lt;media:title type=&quot;plain&quot;&amp;gt;&#39; . $video_title . &#39;&amp;lt;/media:title&amp;gt;&#39;,  
-         &#39;&amp;lt;media:description type=&quot;plain&quot;&amp;gt;&#39; . $video_desc . &#39;&amp;lt;/media:description&amp;gt;&#39;,  
-         &#39;&amp;lt;media:category scheme=&quot;http://gdata.youtube.com/schemas/2007/categories.cat&quot;&amp;gt;Animals&amp;lt;/media:category&amp;gt;&#39;,  
-         &#39;&amp;lt;media:keywords&amp;gt;&#39; . $video_keywords . &#39;&amp;lt;/media:keywords&amp;gt;&#39;,  
-         //&#39;&amp;lt;yt:private/&amp;gt;&#39;,  
-         &#39;&amp;lt;yt:accessControl action=&quot;list&quot; permission=&quot;denied&quot;/&amp;gt;&#39;, //causes the video to be unlisted  
-       &#39;&amp;lt;/media:group&amp;gt;&#39;,  
-     &#39;&amp;lt;/entry&amp;gt;&#39;));
-  
-   //use curl to call youtube api  
-   $ch = curl_init( &#39;http://gdata.youtube.com/action/GetUploadToken&#39; );  
-   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
-   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
-   curl_setopt($ch, CURLOPT_HEADER, 0);
-  
-   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
-     &#39;Authorization: Bearer &#39; . $access_token,  
-     &#39;GData-Version: 2&#39;,  
-     &#39;X-GData-Key: key=&#39; . ],  
-     &#39;Content-Type: application/atom+xml; charset=UTF-8&#39;  
-   ));
-  
-   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_str);  
-
-   //send request  
-   $xml_response = curl_exec($ch);  
-
-   //close connection  
-   curl_close($ch); 
-  
-   $result = simplexml_load_string( $xml_response );  
-   if( $result-&amp;gt;getName() === &#39;errors&#39; )  
-   {  
-     return array(&#39;post_url&#39; =&amp;gt; &#39;broke&#39;, &#39;upload_token&#39; =&amp;gt; &#39;not_a_real_token&#39;);     
-   }  
-   return array(&#39;post_url&#39; =&amp;gt; (string) $result-&amp;gt;url, &#39;upload_token&#39; =&amp;gt; (string) $result-&amp;gt;token);  
- }  
-
-&lt;/pre&gt;
-
-&lt;p&gt;&lt;br /&gt;
-In the code above, the method ‘&#39;’get_access_token();’’’ uses the &lt;span style=&quot;color: #0303FF;&quot;&gt;refreash_token&lt;/span&gt; to make a cURL request to the YouTube API to get a valid &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt;. &lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;pre class=&quot;brush: php&quot;&gt;private function get_access_token()  
- {  
-   $ch = curl_init( &#39;https://accounts.google.com/o/oauth2/token&#39; );  
-   $post_fields = array(  
-     &#39;client_id&#39;   =&amp;gt; ,  
-     &#39;client_secret&#39; =&amp;gt; ,  
-     &#39;refresh_token&#39; =&amp;gt; ,  
-     &#39;grant_type&#39;  =&amp;gt; &#39;refresh_token&#39;  
-   );  
-
-   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
-   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
-   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
-   curl_setopt($ch, CURLOPT_POST, 1);  
-   curl_setopt($ch, CURLOPT_HEADER, 0);  
-   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields)); 
- 
-   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
-     &#39;Content-Type: application/x-www-form-urlencoded&#39;  
-   ));  
-
-   //send request  
-   $response = json_decode( curl_exec($ch) );  
-
-   curl_close($ch);  
-
-   return $response-&amp;gt;access_token;  
- }  
-
-&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-&lt;h3&gt;
-Step 4 - &lt;i&gt;upload the video to YouTube&lt;/i&gt;&lt;/h3&gt;
-&lt;p&gt;Using the &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; we can now display the form to complete this whole process. The &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; you will use in your form will need to have the GET variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;next=…&lt;/span&gt;&lt;/b&gt; added to it. This will be the url that the form will redirect to after the video has finished uploading.&lt;br /&gt;
-&lt;br /&gt;
-The form needs to have the 2 fields ‘token’ and ‘file’, which the API is expecting:&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;pre class=&quot;brush: plain&quot;&gt;&amp;lt;form method=&quot;post&quot; action=&quot;?next=&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;  
-   &amp;lt;input name=&quot;token&quot; type=&quot;hidden&quot; value=&quot;&quot;/&amp;gt;   
-   &amp;lt;input type=&#39;file&#39; id=&#39;file&#39; name=&#39;file&#39; accept=&quot;video/*&quot; /&amp;gt;  
- &amp;lt;/form&amp;gt;   
-&lt;/pre&gt;
-
-&lt;p&gt;&lt;br /&gt;
-When video is finished uploading, the form will redirect to the url you set for &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;next=…&lt;/span&gt;&lt;/b&gt; along with some extra GET variables from YouTube. The variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;status=…&lt;/span&gt;&lt;/b&gt; is always returned, so you can use that to check if it was successful, which the value would be 200. &lt;br /&gt;
-&lt;br /&gt;
-If the upload was a success, you will also get the variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;id=…&lt;/span&gt;&lt;/b&gt; which will have the video’s new id ( http://www.youtube.com/watch?v= ). &lt;br /&gt;
-&lt;br /&gt;
-If the status wasn’t 200, then an error occured and you will get the variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;code=… &lt;/span&gt;&lt;/b&gt;which will describe the error.&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;br /&gt;
-That should be it. Easy huh? after 3 days I finally got this working so I figured it needed documenting and like i said, it’s probably going to change soon so who knows how long this will work.&lt;br /&gt;
-&lt;br /&gt;
-Google also has some code libraries you can use:&lt;br /&gt;
-&lt;a href=&quot;https://developers.google.com/youtube/v3/code_samples/php&quot;&gt;https://developers.google.com/youtube/v3/code_samples/php&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-I looked into them, but was having trouble fitting the code into my project, so maybe if I started with all this in mind, I would’ve been able to use them.&lt;/p&gt;
+&lt;p&gt;What fixed the problem, for now, was to do a little manipulation on the date string before it is passed it to the Date() constructor.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;//twitter = &#39;Thu May 01 13:57:04 +0000 2014&#39;
+//facebook = &#39;2014-04-17T12:59:04+0000&#39;
+    
+var created = facebook.created_time;
+if( isFacebook ) {
+    //this fixes the issue in IE and Safari, and still works in Firefox and Chrome even though they don&#39;t need it.
+    created = created.replace(/-/g, &#39;/&#39;).replace(/T/, &#39; &#39;).replace(/\+/, &#39; +&#39;);
+}
+else if( isTwitter ) {
+    //this is only an issue in IE, so we can just do a quick test and fix the issue.
+    if( navigator.userAgent.match(/MSIE\s([^;]*)/) )
+        created = created .replace(/( \+)/, &#39; UTC$1&#39;);
+}
+var date = new Date( created );
+&lt;/code&gt;&lt;/pre&gt;
 </description>
-        <pubDate>Mon, 30 Sep 2013 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/youtube-browser-based-uploading-with-oauth.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/youtube-browser-based-uploading-with-oauth.html</guid>
+        <pubDate>Thu, 08 May 2014 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/date-strings-from-twitter-and-facebook-invalid.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/date-strings-from-twitter-and-facebook-invalid.html</guid>
         
         
       </item>
     
       <item>
-        <title>The Selected() jQuery Plugin</title>
-        <description>&lt;p&gt;I find myself writing a lot of radio button/toggle button functionality. The core ability is to be able to set and unset an html element as selected (or checked, active, clicked, etc.). This functionality can be wrapped up nicely in a jQuery plugin I created called “selected()”.&lt;/p&gt;
+        <title>Moving my SVG Animation to Canvas with EaselJS (follow-up post)</title>
+        <description>&lt;p&gt;This is a follow-up to the previous post titled “SVG Animation With Clip Paths and Linear Gradients”. I was able you port the SVG animation over to the &amp;lt;canvas /&amp;gt; using &lt;a href=&quot;http://www.createjs.com/#!/EaselJS&quot;&gt;EaselJS&lt;/a&gt;. It wasn’t too bad, I was having a lot of trouble converting the SVG path data that was exported from illustrator, but that all changed when my co-worker found this site: &lt;a href=&quot;http://www.professorcloud.com/svg-to-canvas/&quot;&gt;www.professorcloud.com/svg-to-canvas/&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Example:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;$(&quot;a&quot;).selected(true);
-var isSelected = $(&quot;a&quot;).selected();&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-Of course this led to being able to have a group of buttons with only one selected at a time:&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;$(&quot;a.tab&quot;).selectedGroup();&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;br /&gt;
-I have the plugin up on GitHub with a little more explanation and a demo:
-&lt;a href=&quot;https://github.com/jasonsavage2/jquery.selected&quot;&gt;github.com/jasonsavage2/jquery.selected&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Here is the code I ended up with that re-created the animation from before:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;function initCanvasHeart(canvasId) {
+    var stage       = new createjs.Stage(canvasId),
+        goldRect    = new createjs.Shape(),
+        greenRect   = new createjs.Shape(),
+        blueRect    = new createjs.Shape(),
+        goldMsk     = new createjs.Shape(),
+        greenMsk    = new createjs.Shape(),
+        blueMsk     = new createjs.Shape(),
+        aa          = new createjs.Shape(),
+        width       = stage.canvas.width,
+        height      = stage.canvas.height,
+        rectWidth   = width / 0.4;
+    
+    //create gold rect
+    goldRect.graphics
+        .beginLinearGradientFill(
+            [&quot;#FFC423&quot;, &quot;#ffe191&quot;, &quot;#FFC423&quot;], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    goldRect.x = width-rectWidth;
+    goldRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(goldRect);
+    
+    //create gold rect mask
+    drawGoldStrip( goldMsk.graphics.beginFill(&quot;#000000&quot;) );
+    goldRect.mask = goldMsk;
+    
+    //create green rect
+    greenRect.graphics
+        .beginLinearGradientFill(
+            [&quot;#6EB43F&quot;, &quot;#b6d99f&quot;, &quot;#6EB43F&quot;], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    greenRect.x = width-rectWidth;
+    greenRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(greenRect);
+    
+    //create green rect mask
+    drawGreenStrip( greenMsk.graphics.beginFill(&quot;#000000&quot;) );
+    greenRect.mask = greenMsk;
+    
+    //create blue rect
+    blueRect.graphics
+        .beginLinearGradientFill(
+            [&quot;#0083C8&quot;, &quot;#7fc1e3&quot;, &quot;#0083C8&quot;], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    blueRect.x = width-rectWidth;
+    blueRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(blueRect);
+    
+    //create blue rect mask
+    drawBlueStrip( blueMsk.graphics.beginFill(&quot;#000000&quot;) );
+    blueRect.mask = blueMsk;
+    
+    //add a layer to fix anti-aliasing in Chrome
+    //- the mask in chrome was really pixelated compared to Firefox
+    aa.graphics.setStrokeStyle(1, 1, 1, 2);
+    drawGreenStrip( aa.graphics.beginStroke(&quot;#6EB43F&quot;) ).endStroke();
+    drawGoldStrip( aa.graphics.beginStroke(&quot;#FFC423&quot;) ).endStroke();
+    drawBlueStrip( aa.graphics.beginStroke(&quot;#0083C8&quot;) ).endStroke();
+    aa.cache(0, 0, width, height);
+    stage.addChild(aa);
+
+    //add animations
+    //using TweenJS that is part of EaselJS, we can create a simple repeating animation
+    createjs.Tween.get(goldRect, {loop:true}).to({x: 0 }, 8000);
+    createjs.Tween.get(greenRect, {loop:true}).to({x: 0 }, 8000);
+    createjs.Tween.get(blueRect, {loop:true}).to({x: 0 }, 8000);
+    
+    //add an event listener to the internal ticker object to update the stage, 
+    //otherwise we won&#39;t see the animation
+    createjs.Ticker.addEventListener(&quot;tick&quot;, function( evt ) { 
+        stage.update();
+    });
+}
+
+//these method were each generated by:
+//http://www.professorcloud.com/svg-to-canvas/ 
+function drawGreenStrip(g) {
+    g.moveTo(72.603,317.736);
+    g.bezierCurveTo(71.87,316.727,74.997,320.537,72.603,317.736);
+    g.bezierCurveTo(63.166,306.699,37.833999999999996,281.177,25.986999999999995,258.153);
+    g.bezierCurveTo(-0.2700000000000067,207.12500000000003,-12.807000000000002,128.69500000000002,18.386999999999993,68.50900000000001);
+    g.bezierCurveTo(38.157,30.357,72.942,6.779,118.972,0.328);
+    g.bezierCurveTo(122.661,0.096,126.004,0,129.237,0);
+    g.bezierCurveTo(180.874,0,240.743,26.183,251.61399999999998,145.724);
+    g.lineTo(251.61399999999998,145.724);    g.bezierCurveTo(224.38899999999998,88.70599999999999,175.11599999999999,64.73599999999999,124.02599999999998,79.07799999999999);
+    g.bezierCurveTo(96.53399999999998,86.79299999999999,72.37499999999997,114.35999999999999,60.29699999999998,146.654);
+    g.bezierCurveTo(42.154,195.165,42.749,259.684,72.603,317.736);
+    g.lineTo(72.603,317.736);
+    g.closePath();
+    return g;
+}
+   
+function drawGoldStrip(g) {
+    g.moveTo(446.57,41.168);
+    g.bezierCurveTo(423.02,17.616,391.671,4.649,358.286,4.649);
+    g.bezierCurveTo(310.154,4.649,265.962,31.224,249.12099999999998,69.678);
+    g.bezierCurveTo(253.90999999999997,82.536,257.52799999999996,97.475,259.68199999999996,114.699);
+    g.bezierCurveTo(279.698,91.652,307.98499999999996,77.94200000000001,335.94599999999997,77.94200000000001);
+    g.bezierCurveTo(358.849,77.94200000000001,379.186,87.218,391.736,103.39500000000001);
+    g.bezierCurveTo(407.001,123.06200000000001,410.514,151.238,401.897,184.871);
+    g.bezierCurveTo(389.59499999999997,232.871,326.669,325.246,243.46599999999998,359.457);
+    g.bezierCurveTo(244.652,359.401,276.452,359.675,295.70399999999995,354.659);
+    g.bezierCurveTo(372.371,334.659,441.4409999999999,277.092,459.236,242.862);
+    g.bezierCurveTo(490.488,182.738,503.576,98.174,446.57,41.168);
+    g.closePath();
+    return g;
+}
+   
+function drawBlueStrip(g) {
+    g.moveTo(239.213,444.16);
+    g.bezierCurveTo(218.941,444.16,205.017,435.036,187.38,423.485);
+    g.bezierCurveTo(183.989,421.265,180.448,418.94100000000003,176.668,416.56);
+    g.bezierCurveTo(152.79000000000002,401.536,106.22800000000001,355.632,96.757,342.354);
+    g.bezierCurveTo(67.397,301.205,44.056000000000004,186.868,72.796,146.81599999999997);
+    g.lineTo(79.569,137.36399999999998);
+    g.lineTo(80.349,148.96899999999997);
+    g.bezierCurveTo(83.259,192.36699999999996,93.43100000000001,212.12199999999996,111.904,247.97699999999998);
+    g.bezierCurveTo(137.74599999999998,298.144,195.71699999999998,360.70899999999995,248.362,371.56399999999996);
+    g.bezierCurveTo(307.151,369.43199999999996,356.589,351.84,428.28700000000003,299.106);
+    g.lineTo(428.28700000000003,299.106);
+    g.bezierCurveTo(401.58700000000005,335.235,329.206,400.438,291.47900000000004,424.78499999999997);
+    g.bezierCurveTo(277.495,433.81,258.921,444.16,239.213,444.16);
+    g.closePath();
+    return g;
+}
+&lt;/code&gt;&lt;/pre&gt;
 </description>
-        <pubDate>Mon, 10 Jun 2013 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/the-selected-jquery-plugin.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/the-selected-jquery-plugin.html</guid>
+        <pubDate>Mon, 05 May 2014 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</guid>
         
         
       </item>
     
       <item>
-        <title>Day 1</title>
-        <description>&lt;p&gt;So I started this blog because it seems like everyone who is in the web development biz has some kind of blog to show what they figure out from day to day while building websites. We’ll see how it goes, I’m not that great of a writer…&lt;/p&gt;
+        <title>SVG Animation With Clip Paths and Linear Gradients</title>
+        <description>&lt;p&gt;One of our clients decided to update their logo from a circle to more of a heart. Currently, on the about us page of their website, they have a large version of their logo that spins slowly and when you rollover (or swipe/tap) each color in the logo information appears describing their products. One of our designers and I, sat down to discuss what we could do with a heart shaped logo because having it spin looked weird. We finally came up with a subtle shine effect on the colors, which at first, I thought would be easy since I’ve done it before with flash. I came to find out that there was a little more to it then I originally thought.&lt;/p&gt;
+
+&lt;p&gt;I decided to try the animation with SVG. After reading up on &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/SVG&quot;&gt;SVG graphics and animations&lt;/a&gt;, came up with the following which turned out great:&lt;/p&gt;
+
+&lt;svg width=&quot;486&quot; height=&quot;446&quot; viewbox=&quot;0 0 486 446&quot; version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+    &lt;defs&gt;
+        &lt;lineargradient id=&quot;gradGold&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#FFC423; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#ffe191; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#FFC423; stop-opacity:1&quot; /&gt;
+        &lt;/lineargradient&gt;
+        &lt;lineargradient id=&quot;gradGreen&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#6EB43F; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#b6d99f; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;70%&quot; style=&quot;stop-color:#6EB43F; stop-opacity:1&quot; /&gt;
+        &lt;/lineargradient&gt;
+        &lt;lineargradient id=&quot;gradBlue&quot; x1=&quot;0%&quot; y1=&quot;0%&quot; x2=&quot;100%&quot; y2=&quot;0%&quot;&gt;
+          &lt;stop offset=&quot;30%&quot; style=&quot;stop-color:#0083C8; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;50%&quot; style=&quot;stop-color:#7fc1e3; stop-opacity:1&quot; /&gt;
+          &lt;stop offset=&quot;60%&quot; style=&quot;stop-color:#0083C8; stop-opacity:1&quot; /&gt;
+        &lt;/lineargradient&gt;
+        &lt;clippath id=&quot;stripGold&quot;&gt;
+            &lt;path id=&quot;gold&quot; d=&quot;M446.57,41.168C423.02,17.616,391.671,4.649,358.286,4.649c-48.132,0-92.324,26.575-109.165,65.029
+                c4.789,12.858,8.407,27.797,10.561,45.021c20.016-23.047,48.303-36.757,76.264-36.757c22.903,0,43.24,9.276,55.79,25.453
+                c15.265,19.667,18.778,47.843,10.161,81.476c-12.302,48-75.228,140.375-158.431,174.586c1.186-0.056,32.986,0.218,52.238-4.798
+                c76.667-20,145.737-77.567,163.532-111.797C490.488,182.738,503.576,98.174,446.57,41.168z&quot; /&gt;
+        &lt;/clippath&gt;
+        
+        &lt;clippath id=&quot;stripGreen&quot;&gt;
+            &lt;path id=&quot;green&quot; d=&quot;M72.603,317.736C71.87,316.727,74.997,320.537,72.603,317.736c-9.437-11.037-34.769-36.559-46.616-59.583
+                c-26.257-51.028-38.794-129.458-7.6-189.644C38.157,30.357,72.942,6.779,118.972,0.328C122.661,0.096,126.004,0,129.237,0
+                c51.637,0,111.506,26.183,122.377,145.724l0,0c-27.225-57.018-76.498-80.988-127.588-66.646
+                c-27.492,7.715-51.651,35.282-63.729,67.576C42.154,195.165,42.749,259.684,72.603,317.736L72.603,317.736z&quot; /&gt;
+        &lt;/clippath&gt;
+        
+        &lt;clippath id=&quot;stripBlue&quot;&gt;
+            &lt;path id=&quot;blue&quot; d=&quot;M239.213,444.16c-20.272,0-34.196-9.124-51.833-20.675c-3.391-2.22-6.932-4.544-10.712-6.925
+                c-23.878-15.024-70.44-60.928-79.911-74.206c-29.36-41.149-52.701-155.486-23.961-195.538l6.773-9.452l0.78,11.605
+                c2.91,43.398,13.082,63.153,31.555,99.008c25.842,50.167,83.813,112.732,136.458,123.587
+                c58.789-2.132,108.227-19.724,179.925-72.458l0,0c-26.7,36.129-99.081,101.332-136.808,125.679
+                C277.495,433.81,258.921,444.16,239.213,444.16z&quot; /&gt;
+        &lt;/clippath&gt;
+    &lt;/defs&gt;
+
+    &lt;rect x=&quot;-486&quot; y=&quot;0&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripGold)&quot; fill=&quot;url(#gradGold)&quot;&gt;
+        &lt;animate attributename=&quot;x&quot; attributetype=&quot;XML&quot; from=&quot;-486&quot; to=&quot;243&quot; begin=&quot;2s&quot; dur=&quot;8s&quot; calcmode=&quot;paced&quot; repeatcount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+
+    &lt;rect x=&quot;-650&quot; y=&quot;0&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripGreen)&quot; fill=&quot;url(#gradGreen)&quot;&gt;
+        &lt;animate attributename=&quot;x&quot; attributetype=&quot;XML&quot; from=&quot;-650&quot; to=&quot;0&quot; dur=&quot;8s&quot; begin=&quot;0s&quot; calcmode=&quot;paced&quot; repeatcount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+    
+    &lt;rect x=&quot;-540&quot; y=&quot;100&quot; width=&quot;972&quot; height=&quot;400&quot; clip-path=&quot;url(#stripBlue)&quot; fill=&quot;url(#gradBlue)&quot;&gt;
+        &lt;animate id=&quot;animaRectBlue&quot; attributename=&quot;x&quot; attributetype=&quot;XML&quot; from=&quot;-540&quot; to=&quot;50&quot; begin=&quot;1s&quot; dur=&quot;8s&quot; calcmode=&quot;paced&quot; repeatcount=&quot;indefinite&quot; /&gt;
+    &lt;/rect&gt;
+&lt;/svg&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, if you can see the animation (more on that in a sec), what is happening is that I have 3 wide &amp;lt;rect /&amp;gt; tags each with a &amp;lt;linearGradient /&amp;gt; set as there fill. Each rectangle has an &amp;lt;animation /&amp;gt; tag that slowly animates it from left to right and then repeats. I also have 3 &amp;lt;clipPaths /&amp;gt; tags that each contain a &amp;lt;path /&amp;gt; tag whose “d” attribute is a bunch of draw commands I exported from illustrator. This is one of my first times working with SVG graphics and I really enjoyed it. I can’t wait until it is more widely supported because it reminds me of &lt;a href=&quot;http://www.adobe.com/products/flex.html&quot;&gt;Flex&lt;/a&gt; and &lt;a href=&quot;https://wikidocs.adobe.com/wiki/display/Flex/MXML&quot;&gt;MXML&lt;/a&gt;.
+That last sentence about it being more &lt;a href=&quot;http://caniuse.com/#cats=SVG&quot;&gt;widely supported&lt;/a&gt; is where I am now. I have a backup image setup as a fallback for users whose browsers don’t support SVG, ClipPath, and SMIL animations, but the account managers are a little concerned that the client is going to be upset since we made a big deal about this.&lt;/p&gt;
+
+&lt;p&gt;So, today I’m going to revisit one of the ideas of using the canvas to draw this animation. It’s a bit more supported right now, but before, I was having trouble getting the vector drawing correct since each part of the logo is an irregular shape. I’m thinking either using &lt;a href=&quot;http://www.createjs.com/#!/EaselJS&quot;&gt;EaselJS&lt;/a&gt; (since I’ve used it before) or maybe &lt;a href=&quot;http://fabricjs.com/&quot;&gt;FabricJS&lt;/a&gt; (since I think it might be more popular).&lt;/p&gt;
+
+&lt;p&gt;Here ia the raw html code for the above image:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;svg width=&amp;quot;486&amp;quot; height=&amp;quot;446&amp;quot; viewBox=&amp;quot;0 0 486 446&amp;quot; version=&amp;quot;1.1&amp;quot; xmlns=&amp;quot;http://www.w3.org/2000/svg&amp;quot; xmlns:xlink=&amp;quot;http://www.w3.org/1999/xlink&amp;quot;&amp;gt;
+    &amp;lt;defs&amp;gt;
+        &amp;lt;linearGradient id=&amp;quot;gradGold&amp;quot; x1=&amp;quot;0%&amp;quot; y1=&amp;quot;0%&amp;quot; x2=&amp;quot;100%&amp;quot; y2=&amp;quot;0%&amp;quot;&amp;gt;
+          &amp;lt;stop offset=&amp;quot;30%&amp;quot; style=&amp;quot;stop-color:#FFC423; stop-opacity:1&amp;quot; /&amp;gt;
+          &amp;lt;stop offset=&amp;quot;50%&amp;quot; style=&amp;quot;stop-color:#ffe191; stop-opacity:1&amp;quot; /&amp;gt;
+          &amp;lt;stop offset=&amp;quot;70%&amp;quot; style=&amp;quot;stop-color:#FFC423; stop-opacity:1&amp;quot; /&amp;gt;
+        &amp;lt;/linearGradient&amp;gt;
+        &amp;lt;linearGradient id=&amp;quot;gradGreen&amp;quot; x1=&amp;quot;0%&amp;quot; y1=&amp;quot;0%&amp;quot; x2=&amp;quot;100%&amp;quot; y2=&amp;quot;0%&amp;quot;&amp;gt;
+          &amp;lt;stop offset=&amp;quot;30%&amp;quot; style=&amp;quot;stop-color:#6EB43F; stop-opacity:1&amp;quot; /&amp;gt;
+          &amp;lt;stop offset=&amp;quot;50%&amp;quot; style=&amp;quot;stop-color:#b6d99f; stop-opacity:1&amp;quot; /&amp;gt;
+          &amp;lt;stop offset=&amp;quot;70%&amp;quot; style=&amp;quot;stop-color:#6EB43F; stop-opacity:1&amp;quot; /&amp;gt;
+        &amp;lt;/linearGradient&amp;gt;
+        &amp;lt;linearGradient id=&amp;quot;gradBlue&amp;quot; x1=&amp;quot;0%&amp;quot; y1=&amp;quot;0%&amp;quot; x2=&amp;quot;100%&amp;quot; y2=&amp;quot;0%&amp;quot;&amp;gt;
+          &amp;lt;stop offset=&amp;quot;30%&amp;quot; style=&amp;quot;stop-color:#0083C8; stop-opacity:1&amp;quot; /&amp;gt;
+          &amp;lt;stop offset=&amp;quot;50%&amp;quot; style=&amp;quot;stop-color:#7fc1e3; stop-opacity:1&amp;quot;/&amp;gt;
+          &amp;lt;stop offset=&amp;quot;60%&amp;quot; style=&amp;quot;stop-color:#0083C8; stop-opacity:1&amp;quot; /&amp;gt;
+        &amp;lt;/linearGradient&amp;gt;
+        &amp;lt;clipPath id=&amp;quot;stripGold&amp;quot;&amp;gt;
+            &amp;lt;path id=&amp;quot;gold&amp;quot; d=&amp;quot;M446.57,41.168C423.02,17.616,391.671,4.649,358.286,4.649c-48.132,0-92.324,26.575-109.165,65.029
+                c4.789,12.858,8.407,27.797,10.561,45.021c20.016-23.047,48.303-36.757,76.264-36.757c22.903,0,43.24,9.276,55.79,25.453
+                c15.265,19.667,18.778,47.843,10.161,81.476c-12.302,48-75.228,140.375-158.431,174.586c1.186-0.056,32.986,0.218,52.238-4.798
+                c76.667-20,145.737-77.567,163.532-111.797C490.488,182.738,503.576,98.174,446.57,41.168z&amp;quot;/&amp;gt;
+        &amp;lt;/clipPath&amp;gt;
+        
+        &amp;lt;clipPath id=&amp;quot;stripGreen&amp;quot;&amp;gt;
+            &amp;lt;path id=&amp;quot;green&amp;quot; d=&amp;quot;M72.603,317.736C71.87,316.727,74.997,320.537,72.603,317.736c-9.437-11.037-34.769-36.559-46.616-59.583
+                c-26.257-51.028-38.794-129.458-7.6-189.644C38.157,30.357,72.942,6.779,118.972,0.328C122.661,0.096,126.004,0,129.237,0
+                c51.637,0,111.506,26.183,122.377,145.724l0,0c-27.225-57.018-76.498-80.988-127.588-66.646
+                c-27.492,7.715-51.651,35.282-63.729,67.576C42.154,195.165,42.749,259.684,72.603,317.736L72.603,317.736z&amp;quot;/&amp;gt;
+        &amp;lt;/clipPath&amp;gt;
+        
+        &amp;lt;clipPath id=&amp;quot;stripBlue&amp;quot;&amp;gt;
+            &amp;lt;path id=&amp;quot;blue&amp;quot; d=&amp;quot;M239.213,444.16c-20.272,0-34.196-9.124-51.833-20.675c-3.391-2.22-6.932-4.544-10.712-6.925
+                c-23.878-15.024-70.44-60.928-79.911-74.206c-29.36-41.149-52.701-155.486-23.961-195.538l6.773-9.452l0.78,11.605
+                c2.91,43.398,13.082,63.153,31.555,99.008c25.842,50.167,83.813,112.732,136.458,123.587
+                c58.789-2.132,108.227-19.724,179.925-72.458l0,0c-26.7,36.129-99.081,101.332-136.808,125.679
+                C277.495,433.81,258.921,444.16,239.213,444.16z&amp;quot;/&amp;gt;
+        &amp;lt;/clipPath&amp;gt;
+    &amp;lt;/defs&amp;gt;
+
+    &amp;lt;rect x=&amp;quot;-486&amp;quot; y=&amp;quot;0&amp;quot; width=&amp;quot;972&amp;quot; height=&amp;quot;400&amp;quot; clip-path=&amp;quot;url(#stripGold)&amp;quot; fill=&amp;quot;url(#gradGold)&amp;quot;&amp;gt;
+        &amp;lt;animate attributeName=&amp;quot;x&amp;quot; attributeType=&amp;quot;XML&amp;quot; from=&amp;quot;-486&amp;quot; to=&amp;quot;243&amp;quot; begin=&amp;quot;2s&amp;quot; dur=&amp;quot;8s&amp;quot; calcMode=&amp;quot;paced&amp;quot; repeatCount=&amp;quot;indefinite&amp;quot; /&amp;gt;
+    &amp;lt;/rect&amp;gt;
+
+    &amp;lt;rect x=&amp;quot;-650&amp;quot; y=&amp;quot;0&amp;quot; width=&amp;quot;972&amp;quot; height=&amp;quot;400&amp;quot; clip-path=&amp;quot;url(#stripGreen)&amp;quot; fill=&amp;quot;url(#gradGreen)&amp;quot;&amp;gt;
+        &amp;lt;animate attributeName=&amp;quot;x&amp;quot; attributeType=&amp;quot;XML&amp;quot; from=&amp;quot;-650&amp;quot; to=&amp;quot;0&amp;quot; dur=&amp;quot;8s&amp;quot; begin=&amp;quot;0s&amp;quot; calcMode=&amp;quot;paced&amp;quot; repeatCount=&amp;quot;indefinite&amp;quot; /&amp;gt;
+    &amp;lt;/rect&amp;gt;
+    
+    &amp;lt;rect x=&amp;quot;-540&amp;quot; y=&amp;quot;100&amp;quot; width=&amp;quot;972&amp;quot; height=&amp;quot;400&amp;quot; clip-path=&amp;quot;url(#stripBlue)&amp;quot; fill=&amp;quot;url(#gradBlue)&amp;quot;&amp;gt;
+        &amp;lt;animate id=&amp;quot;animaRectBlue&amp;quot; attributeName=&amp;quot;x&amp;quot; attributeType=&amp;quot;XML&amp;quot; from=&amp;quot;-540&amp;quot; to=&amp;quot;50&amp;quot; begin=&amp;quot;1s&amp;quot; dur=&amp;quot;8s&amp;quot; calcMode=&amp;quot;paced&amp;quot; repeatCount=&amp;quot;indefinite&amp;quot; /&amp;gt;
+    &amp;lt;/rect&amp;gt;
+&amp;lt;/svg&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 </description>
-        <pubDate>Wed, 05 Jun 2013 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/day1.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/day1.html</guid>
+        <pubDate>Sun, 04 May 2014 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/svg-animation-with-clip-path-and-linear-gradients.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/svg-animation-with-clip-path-and-linear-gradients.html</guid>
         
         
       </item>

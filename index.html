@@ -64,134 +64,66 @@
           <div class="content">
             <section>
               <header>
-                <h2><a href="/blog/tips-for-building-angularjs-forms-with-validation.html">Tips for building AngularJS forms with validation</a></h2>
+                <h2><a href="/blog/moved-my-blog-to-github-using-jekyll-and-prism.html">Moved My Blog To GitHub Using Jekyll And Prism</a></h2>
               </header>
-              <p>In this article we will be using <a href="https://angularjs.org/">AngularJS 1.3.15</a>, because that’s what version the project I’m currently working on uses. Keep in mind, this stuff changes all the time but, for now, this seems to be the “correct” way.</p>
+              <p>A few days ago I decided that <a href="https://www.blogger.com">Blogger</a> is just too hard to work with. It takes me so long to write a blog post that I either end up pasting a bunch of code into a post and calling it complete or not writing them. This frustration led me to start exploring what other people are using for their blogs.</p>
 
-<p>You’ve probably been using AngularJS for a while now, you also know how forms work, and you probably have forms in you’re AngularJS project that are collecting data and everything is working fine. So why do you still need help with forms? That’s where I was at a few days ago. I’ve been building forms with a basic understanding of <a href="https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngModel">ng-model</a> and <a href="https://code.angularjs.org/1.3.16/docs/api/ng/type/form.FormController">FormController</a>, and they work, but I’ve been writing a lot of extra JavaScript to do it.</p>
+<p>I’ve used <a href="https://wordpress.com/">Wordpress</a> before and on many hosting site it can be installed with a click of a button. That’s great and there are tons of themes out there, but when you get into it, I still find it hard to customize a theme. For one thing, there’s about a thousand PHP files to look through and edit after you install a theme.</p>
 
-<p>A developer on my team, figured out a better way to do a lot of the validation using AngularJS and it’s was so simple. It was right here the whole time: <a href="https://code.angularjs.org/1.3.16/docs/guide/forms">code.angularjs.org/1.3.16/docs/guide/forms</a>.</p>
+<p>This led me to <a href="https://ghost.org/">Ghost</a> which looks awesome and easy to use, plus there hosting plan will take care of any setup needed. Ghost is a <a href="https://nodejs.org">nodejs</a> based site which it promotes as making it lightning fast compared to other platforms. Unfortunately, a lot of basic web hosts don’t support nodejs sites, so if you decide to use your own web host you might run into some issues. I ended up not using Ghost because it’s not free. :)</p>
 
-<p>So, let’s put a contact us form together using <a href="https://angularjs.org/">AngularJS</a> and <a href="http://getbootstrap.com/">Bootstrap</a>.</p>
-<pre><code class="language-javascript">angular.module("mainApp")
-    .controller("ContactCtrl", function ($scope, $log) {
-        "use strict";
-});</code></pre>
-<pre><code class="language-html">&lt;form class=&quot;form-horizontal&quot; name=&quot;contactForm&quot; novalidate&gt;&lt;/form&gt;</code></pre>
+<p>Finally, I came across <a href="https://jekyllrb.com/">Jekyll</a>. The difference with Jekyll is that it’s not really a blog site or platform like WordPress or Ghost, but a site generator. What is also neat is that it doesn’t use a database.</p>
 
-<p>Starting with a basic controller and a form template. We already have a ton of stuff setup here thanks to AngularJS. AngularJS adds <a href="https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngForm">ng-form</a> code to all &lt;form&gt; and &lt;ng-form&gt; tags that sets up a property on the $scope that matches the name you gave the form. In this example, even though we didn’t create it, we can now access $scope.contactForm which is an instance of FormController.</p>
+<h3 id="how-do-you-write-posts">How do you write posts?</h3>
+<p>Since Jekyll is a site generator, you are free to build or download whatever html template you want. After you have your html code, you can start slicing it up and adding <a href="http://liquidmarkup.org/">liquid markup</a> where ever you want your dynamic content to go. For all your posts, they go in the _posts folder (drafts go in the _drafts folder) and can be written using <a href="https://daringfireball.net/projects/markdown/">markdown</a>. More on directory structure can be found here: <a href="http://jekyllrb.com/docs/structure/">jekyllrb.com/docs/structure</a>. Then when you run <strong>jekyll build</strong> from the command line, your static blog site is generated and put into the _site folder.</p>
 
-<p>For the HTML template, I’m going to copy the code from the link <a href="https://code.angularjs.org/1.3.16/docs/guide/forms">code.angularjs.org/1.3.16/docs/guide/forms</a> to setup a name and email field in our form. Before we use it though, let’s update the code to match what <a href="http://getbootstrap.com/css/#forms-horizontal">Bootstrap</a> has for the basic HTML structure for a horizontal form using their CSS classes.</p>
-<pre><code class="language-html">&lt;form class=&quot;form-horizontal&quot; name=&quot;contactForm&quot;&gt;
+<p>I can’t tell you how much nicer it is to be able to write your posts using markdown. The command <strong>jekyll server</strong> with actually spin up a quick node server so you can preview your website at http://localhost:4000/ and it even watches for changes allowing you to edit the markdown, and instantly view the compiled output in your browser.</p>
 
-    &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;inputName&quot; class=&quot;col-sm-2 control-label&quot;&gt;Name:&lt;/label&gt;
-        &lt;div class=&quot;col-sm-10&quot;&gt;
-            
-            &lt;input type=&quot;text&quot; id=&quot;inputName&quot; name=&quot;uName&quot;
-                   class=&quot;form-control&quot;
-                   placeholder=&quot;Enter your name&quot;
-                   ng-model=&quot;user.name&quot;
-                   required /&gt;
-            
-            &lt;div ng-show=&quot;contactForm.$submitted || contactForm.uName.$touched&quot;&gt;
-                &lt;span ng-show=&quot;contactForm.uName.$error.required&quot;&gt;
-                    Tell us your name.&lt;/span&gt;
-            &lt;/div&gt;
-            
-        &lt;/div&gt;
-    &lt;/div&gt;
+<p>There are Jekyll themes out there and I ended up using one called <a href="http://jekyllthemes.org/themes/twenty/">Twenty by HTML5 UP</a> from <a href="http://jekyllthemes.org/">jekyllthemes.org</a> as a base layout for my blog. Downloading and looking at the template, I was able to easily tweak everything as I wanted because it’s just html. As for the formatting of my code samples, I’m using <a href="http://prismjs.com/">Prismjs</a> which I discovered while viewing other popular blog sites. It is quite a step up from <a href="http://alexgorbatchev.com/SyntaxHighlighter">Syntax Highlighter</a> that I was using on Blogger.</p>
 
-    &lt;div class=&quot;form-group&quot;&gt;
-        &lt;label for=&quot;inputEmail&quot; class=&quot;col-sm-2 control-label&quot;&gt;E-mail:&lt;/label&gt;
-        &lt;div class=&quot;col-sm-10&quot;&gt;
-            
-            &lt;input type=&quot;email&quot; id=&quot;inputEmail&quot; name=&quot;uEmail&quot;
-                   class=&quot;form-control&quot;
-                   placeholder=&quot;E-mail&quot;
-                   ng-model=&quot;user.email&quot;
-                   required /&gt;
-            
-            &lt;div ng-show=&quot;contactForm.$submitted || contactForm.uEmail.$touched&quot;&gt;
-                &lt;span ng-show=&quot;contactForm.uEmail.$error.required&quot;&gt;
-                    Tell us your email.&lt;/span&gt;
-                &lt;span ng-show=&quot;contactForm.uEmail.$error.email&quot;&gt;
-                    This is not a valid email.&lt;/span&gt;
-            &lt;/div&gt;
-            
-        &lt;/div&gt;
-    &lt;/div&gt;
+<h3 id="hosting-of-github">Hosting of GitHub</h3>
+<p>Maybe I’m late to the table on this but GitHub allows you to host your site from a public GitHub repository. Just create a new repo named username.github.io, where username is your username (or organization name) on GitHub. After that clone the repo to your computer, copy all your files that Jekyll has copied to the _site folder, run <strong>git push</strong> and your site is live.</p>
 
-    &lt;div class=&quot;form-group&quot;&gt;
-        &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
-            
-            &lt;button type=&quot;button&quot; 
-                    class=&quot;btn btn-default&quot; 
-                    ng-click=&quot;reset()&quot;&gt;Reset&lt;/button&gt;
-            
-            &lt;button type=&quot;submit&quot; 
-                    class=&quot;btn btn-primary&quot; 
-                    ng-click=&quot;save()&quot; 
-                    ng-disabled=&quot;contactForm.$invalid&quot;&gt;Save&lt;/button&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
+<h3 id="any-code-examples">Any code examples?</h3>
+<p>With all this I did have to figure out one thing and good old <a href="http://stackoverflow.com/">stackoverflow</a> came to the rescue. The template I downloaded was for a whole site, but right now I only have a blog so I cut out everything but the blog page and made that my index.html page. The template was setup to display all blog entries with an excerpt and a read more link. This wasn’t going to work, I only wanted my most recent blog entry featured with navigation to all my other entries in a side bar. Being really new to Jekyll and the Liquid templating markup, I had no idea where to start.</p>
 
-&lt;/form&gt;</code></pre>
+<p>Thankfully, someone had already figured this out: 
+<a href="http://stackoverflow.com/questions/19086284/jekyll-liquid-templating-how-to-group-blog-posts-by-year">stackoverflow.com/questions/19086284/jekyll-liquid-templating-how-to-group-blog-posts-by-year</a>.</p>
 
-<h3 id="the-name-attribute">The name attribute</h3>
+<p>This is the code I ended up using from that post, and it worked quite nicely.</p>
 
-<p>The thing to look at is that on each input we have added a <strong>name</strong> attribute. This is what I was missing when I first tried to setup forms using validation in this way. Adding the name “uName” will in turn add that property to the parent formController instance “contactForm”.</p>
+<pre><code class="language-html">&#123;% for post in site.posts  %&#125;
+    &#123;% capture this_year %&#125;&#123;&#123; post.date | date: &quot;%Y&quot; &#125;&#125;&#123;% endcapture %&#125;
+    &#123;% capture this_month %&#125;&#123;&#123; post.date | date: &quot;%B&quot; &#125;&#125;&#123;% endcapture %&#125;
+    &#123;% capture next_year %&#125;&#123;&#123; post.previous.date | date: &quot;%Y&quot; &#125;&#125;&#123;% endcapture %&#125;
+    &#123;% capture next_month %&#125;&#123;&#123; post.previous.date | date: &quot;%B&quot; &#125;&#125;&#123;% endcapture %&#125;
 
-<p>Now, that element’s ng-model scope can be accessed via $scope.contactForm.uName. This is big because then we can easily add validation messages like <strong>ng-show=”contactForm.uEmail.$error.required</strong>” in a list under each form input.</p>
+    &#123;% if forloop.first %&#125;
+    &lt;h2 id=&quot;&#123;&#123; this_year &#125;&#125;-ref&quot;&gt;&#123;&#123;this_year&#125;&#125;&lt;/h2&gt;
+    &lt;h3 id=&quot;&#123;&#123; this_year &#125;&#125;-&#123;&#123; this_month &#125;&#125;-ref&quot;&gt;&#123;&#123; this_month &#125;&#125;&lt;/h3&gt;
+    &lt;ul&gt;
+    &#123;% endif %&#125;
 
-<h3 id="touched">$touched</h3>
+    &lt;li&gt;&lt;a href=&quot;&#123;&#123; post.url &#125;&#125;&quot;&gt;&#123;&#123; post.title &#125;&#125;&lt;/a&gt;&lt;/li&gt;
 
-<p>Another thing I overlooked was the wrapping div around the validation messages. With out it, as soon as the form loads, we see the required error message and the input it outlined in red. I thought this was an issue with AngularJS and spent a lot of time getting around it, but actually I just need to use the <strong>$touched</strong> property. This will cause the input not to be shown as invalid until the user causes a blur event on the field.</p>
-
-<h3 id="submitted">$submitted</h3>
-
-<p>The last thing I want to point out is the <strong>contactForm.$submitted</strong> property. Since AngularJS converts all form tags to ng-form, they no longer submit to the server by default when you mark a button as <strong>type=”submit”</strong>. What happens is that this property on formController is set to true, which allows us another chance to show any validation errors in the form.</p>
-
-<p>Let’s do a little work on our controller now.</p>
-<pre><code class="language-javascript">angular.module("mainApp")
-    .controller("ContactCtrl", function ($scope, $log, userService) {
-        "use strict";
-
-    //we need to create a new user to hold our form data. 
-    $scope.user = userService.createUser();
-
-    //we'll assume that userService.createUser() returns an object like this:
-    //{ name : "", email : "" };
-
-    $scope.reset = function () {
-        //here we can just do a simple call to create a new user again
-        $scope.user = userService.createUser();
-    };
-
-    $scope.save = function () {
-        //we can use our formController to do a simple check to see if the form is valid
-        if( $scope.contactForm.$valid ) {
-            //all fields are valid, so submit to server.
-            userService.save( $scope.user );
-        }
-    };
-});</code></pre>
-
-<p>As you can see, we can let AngularJS do most of the work with forms and validation. No more if/else statements like this to check all the custom validation on your form elements.</p>
-<pre><code class="language-javascript">$scope.save = function () {
-    if($scope.user.name.length === 0) {
-         $scope.userNameError = "Name is Required!";
-    } else if($scope.user.email.length &gt; 0) {
-         $scope.userEmailError = "Email is Required!";
-    } else if(! isEmail($scope.user.email) ) {
-         $scope.userEmailError = "This is not a valid email.";
-    } else {
-         //form is valid
-         userService.save( $scope.user );
-    }
-};
+    &#123;% if forloop.last %&#125;
+    &lt;/ul&gt;
+    &#123;% else %&#125;
+        &#123;% if this_year != next_year %&#125;
+        &lt;/ul&gt;
+        &lt;h2 id=&quot;&#123;&#123; next_year &#125;&#125;-ref&quot;&gt;&#123;&#123;next_year&#125;&#125;&lt;/h2&gt;
+        &lt;h3 id=&quot;&#123;&#123; next_year &#125;&#125;-&#123;&#123; next_month &#125;&#125;-ref&quot;&gt;&#123;&#123; next_month &#125;&#125;&lt;/h3&gt;
+        &lt;ul&gt;
+        &#123;% else %&#125;
+            &#123;% if this_month != next_month %&#125;
+            &lt;/ul&gt;
+            &lt;h3 id=&quot;&#123;&#123; this_year &#125;&#125;-&#123;&#123; next_month &#125;&#125;-ref&quot;&gt;&#123;&#123; next_month &#125;&#125;&lt;/h3&gt;
+            &lt;ul&gt;
+            &#123;% endif %&#125;
+        &#123;% endif %&#125;
+    &#123;% endif %&#125;
+&#123;% endfor %&#125;
 </code></pre>
-
 
             </section>
           </div>
@@ -216,8 +148,27 @@
 
                 
                 <h2 id="2015-ref">2015</h2>
-                <h3 id="2015-June-ref">June</h3>
+                <h3 id="2015-October-ref">October</h3>
                 <ul>
+                
+
+                <li><a href="/blog/moved-my-blog-to-github-using-jekyll-and-prism.html">Moved My Blog To GitHub Using Jekyll And Prism</a></li>
+
+                
+                    
+                        
+                        </ul>
+                        <h3 id="2015-June-ref">June</h3>
+                        <ul>
+                        
+                    
+                
+            
+                
+                
+                
+                
+
                 
 
                 <li><a href="/blog/tips-for-building-angularjs-forms-with-validation.html">Tips for building AngularJS forms with validation</a></li>
@@ -318,10 +269,195 @@
 
                 
                     
+                        
+                        </ul>
+                        <h3 id="2014-May-ref">May</h3>
+                        <ul>
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/date-strings-from-twitter-and-facebook-invalid.html">Date Strings from Twitter & Facebook Invaild? (IE & Safari)</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/moving-my-svg-animation-to-canvas-with-easeljs.html">Moving my SVG Animation to Canvas with EaselJS (follow-up post)</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/svg-animation-with-clip-path-and-linear-gradients.html">SVG Animation With Clip Paths and Linear Gradients</a></li>
+
+                
+                    
+                        
+                        </ul>
+                        <h3 id="2014-April-ref">April</h3>
+                        <ul>
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/combining-php-html-templates-with-associative-array-models.html">Combining PHP html templates with associative array models</a></li>
+
+                
+                    
+                        
+                        </ul>
+                        <h3 id="2014-March-ref">March</h3>
+                        <ul>
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/how-to-get-twitter-tweets-for-a-screen-name-using-application-only-oauth.html">How to get the Twitter tweets for a screen name using Application-only OAuth (PHP & cURL)</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/introducing-the-grunt-namespacer-task.html">Introducing the grunt-namespacer Task</a></li>
+
+                
+                    
+                        
+                        </ul>
+                        <h3 id="2014-January-ref">January</h3>
+                        <ul>
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/ruby-script-to-execute-google-closure-compiler-to-compress-your-javascript.html">Ruby Script to execute Google Closure Compiler to compress your JavaScript</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/using-flash-sharedobject-to-store-user-info.html">Using Flash Shared Object to Store User Info</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/how-to-extend-a-javascript-pseudo-class.html">How to Extend a Javascript Pseudo Class</a></li>
+
+                
+                    
                     </ul>
                     <h2 id="2013-ref">2013</h2>
-                    <h3 id="2013-September-ref">September</h3>
+                    <h3 id="2013-October-ref">October</h3>
                     <ul>
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/ruby-script-for-sorting-photos-by-year-and-month.html">Ruby Script for sorting photos by year and month</a></li>
+
+                
+                    
+                        
+                    
+                
+            
+                
+                
+                
+                
+
+                
+
+                <li><a href="/blog/sql-to-find-distance-based-on-latitude-and-longitude.html">SQL to find distance based on latitude and longitude</a></li>
+
+                
+                    
+                        
+                        </ul>
+                        <h3 id="2013-September-ref">September</h3>
+                        <ul>
+                        
                     
                 
             

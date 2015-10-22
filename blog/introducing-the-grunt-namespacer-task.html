@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Introducing the grunt-namespacer Task</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/introducing-the-grunt-namespacer-task.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon javascript"></span>
+    <h2 class="post-title">Introducing the grunt-namespacer Task</h2>
+    <p class="post-meta">Mar 7, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p><a href="http://gruntjs.com">Grunt</a> has caught my eye, again, as a nice way to “build” all my javascript into a small, clean file that I can include in the websites I work on. With the Grunt setup complete on the <a href="https://wordpress.org">Wordpress</a> site/theme I am working on, I started looking for a way to concat, closure wrap, and compress/obfuscate all the JavaScript in my source folder so I can separate out my scripts into different files (kinda like how a bunch of node.js projects work). I figured, at the most, this would be nice for utility functions that I could copy from site to site with minimal code editing.</p>
+
+<p>My searches on GitHub lead me to the following tasks: <a href="https://github.com/gruntjs/grunt-contrib-concat">grunt-contrib-concat</a>, <a href="https://github.com/chrissrogers/grunt-wrap">grunt-wrap</a>, <a href="https://github.com/gruntjs/grunt-contrib-uglify">grunt-contrib-uglify</a>. But, after setting up these tasks and doing some test builds, I started thinking that it would be nice if there was a task that would create namespaces automatically to avoid method name collisions. The only task I could find that was close was <a href="https://github.com/vontio/grunt-autowrap">grunt-autowrap</a> but it didn’t do exactly what I wanted. This lead me into looking at how to build your own grunt tasks.</p>
+
+<p>This is what I ended up with: <a href="https://github.com/jasonsavage/grunt-namespacer">grunt-namespacer</a>.</p>
+
+<pre><code class="language-javascript">//Gruntfile.js
+grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+
+    //grunt-namespacer task config
+    namespacer : {
+        basic : {
+            src: 'js/src/app/',
+            dest: 'js/build/'
+        }
+    }
+    ...
+});
+
+// Load the plugins for all tasks.
+grunt.loadNpmTasks('grunt-namespacer');
+
+// Default task(s).
+grunt.registerTask('default', ['namespacer']);
+</code></pre>
+
+<p>This task will take your javascript files and concat and closure wrap them based on your folder structure. For example, if your folder structure in your js folder is like this:</p>
+<pre><code class="language-javascript">+ src/
+    + app/
+        init.js
+        + controls/
+            checkbox.js
+            tabs.js
+            forms.js
+        + models/
+            person.js
+            cart.js
+        + utils/
+            empty.js
+            json.js
+            ajax.js
+</code></pre>
+
+<p>Then after you run the namespacer task you will get a file named ‘app.js’ (base folder name), and be able to access everything like this:</p>
+<pre><code class="language-javascript">app.init.run();
+
+var person = new app.models.Person('Dave');
+app.utils.ajax('/register', person, function(response) {
+    person.id = response.data.id;
+});
+</code></pre>
+
+<p>Also, scope is based on folder so any function in tabs.js can access methods in forms.js without having to use the namespace. This task is free to use and I welcome any comments to help improve it.</p>
+
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/ruby-script-to-execute-google-closure-compiler-to-compress-your-javascript.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/how-to-get-twitter-tweets-for-a-screen-name-using-application-only-oauth.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

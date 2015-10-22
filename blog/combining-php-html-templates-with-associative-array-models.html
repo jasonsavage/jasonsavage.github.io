@@ -8,7 +8,7 @@
 -->
 
 <head>
-    <title>Moving to Raleigh to work for Infusion</title>
+    <title>Combining PHP html templates with associative array models</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="My everyday struggles with the web">
     <meta name="keywords" content="" />
@@ -32,7 +32,7 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
     <meta name="viewport" content="width=device-width">
 
-    <link rel="canonical" href="http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html">
+    <link rel="canonical" href="http://locahost:4000/blog/combining-php-html-templates-with-associative-array-models.html">
 </head>
 
 
@@ -52,25 +52,75 @@
     <div class="page-content">
         <article id="main">
   <header class="special container">
-    <span class="icon suitcase"></span>
-    <h2 class="post-title">Moving to Raleigh to work for Infusion</h2>
-    <p class="post-meta">Jun 4, 2014</p>
+    <span class="icon php"></span>
+    <h2 class="post-title">Combining PHP html templates with associative array models</h2>
+    <p class="post-meta">Apr 16, 2014</p>
   </header>
 
   <section class="style4 wrapper container">
-    <p>The time has come for me to pack my bags and move south. I’ve been in Pittsburgh, PA since I graduated from <a href="http://www.edinboro.edu/">Edinboro University</a> in 2003, and even a few years before college. Living and working in the burgh, I’ve gained a lot of experience and had the pleasure working with many really talented people. But, alas, the weather has finally gotten to my wife and me. Plus, my son is starting 2nd grade in the fall! and I fear that if we don’t move soon, we’ll never leave.</p>
+    <p>I’ve been using <a href="http://ellislab.com/codeigniter">Codeigniter</a> for the past 2 years now and I really like it. It might just be the MVC (like) pattern, but it’s got a lot of nice built in classes that make building website in PHP a lot quicker, easier and cleaner. So, with my recent exposure to <a href="http://wordpress.org">Wordpress</a>, I came to a spot where I was mixing a lot of html with php code, which is something I really hate doing.</p>
 
-<p>I was offered an Interactive Developer role with a big New York company called <a href="http://www.infusion.com/">Infusion</a>. Infusion is opening an office in Raleigh, NC and I’ll be part of the many new hires for that team.</p>
+<p>Thinking of how, with Codeigniter (and other frameworks), you can combine a *.php template with a data array (or a view model) and render a page I was curious. How does Codeigniter load a php page into a scope with the variables from the supplied data array and spit out the resulting page? After doing a bit of digging I found this nifty function that I ported to my Wordpress theme and now my code looks much cleaner.</p>
 
-<p>It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?</p>
+<pre><code class="language-php">function load_template($filename, $data=array()) 
+{
+    $filename = '/inc/templates/' . $filename . '.php';
+    
+    if (is_file($filename)) 
+    {
+        extract($data);
+        ob_start();
+        
+        include( $filename );
+        
+        $buffer = ob_get_contents();
+        @ob_end_clean();
+        return $buffer;
+    }
+    return false;
+}
+</code></pre>
+<p>Now with this function you can write a template like…</p>
+<pre><code class="language-html">//inc/templates/biocard.php
+&lt;div class="card"&gt;
+    &lt;div class="photo"&gt;
+    &lt;?php if( ! empty($image) ) : ?&gt;
+        &lt;img src="&lt;?= $image; ?&gt;" alt="&lt;?= $name; ?&gt;" /&gt;
+    &lt;?php else : ?&gt;
+        &lt;img src="/img/missing-user-image.jpg" alt="&lt;?= $name; ?&gt;" /&gt;
+    &lt;?php endif; ?&gt;
+    &lt;/div&gt;
+    &lt;div class="detail"&gt;
+        &lt;h4&gt;&lt;?= $name; ?&gt;&lt;/h4&gt;
+        &lt;h5&gt;&lt;?= $title; ?&gt;&lt;/h5&gt;
+        &lt;?php if( ! empty($email) ) : ?&gt;
+            &lt;a class="email" href="mailto:&lt;?= strtolower($email); ?&gt;"&gt;Email&lt;/a&gt;
+        &lt;?php endif; ?&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>… and populate it with an associative array:</p>
+
+<pre><code class="language-php">
+$model = array(
+    'name' =&gt; 'Jason',
+    'title' =&gt; 'Web Developer',
+    'email' =&gt; 'jason@home.com',
+    'image' =&gt; 'path/to/profile/image.jpg'
+);
+
+return load_template('biocard', $model);
+</code></pre>
+
 
   </section>
 
     <footer>
         
-        <a href="/blog/date-strings-from-twitter-and-facebook-invalid.html" class="post-prev">&larr; Previous post</a> 
+        <a href="/blog/how-to-get-twitter-tweets-for-a-screen-name-using-application-only-oauth.html" class="post-prev">&larr; Previous post</a> 
         
-        <a href="/blog/angularjs-custom-data-table-example.html" class="post-next">Next post &rarr;</a> 
+        <a href="/blog/svg-animation-with-clip-path-and-linear-gradients.html" class="post-next">Next post &rarr;</a> 
     </footer>
 </article>
 

@@ -8,7 +8,7 @@
 -->
 
 <head>
-    <title>Moving to Raleigh to work for Infusion</title>
+    <title>Ruby Script for sorting photos by year and month</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="My everyday struggles with the web">
     <meta name="keywords" content="" />
@@ -32,7 +32,7 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
     <meta name="viewport" content="width=device-width">
 
-    <link rel="canonical" href="http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html">
+    <link rel="canonical" href="http://locahost:4000/blog/ruby-script-for-sorting-photos-by-year-and-month.html">
 </head>
 
 
@@ -52,25 +52,104 @@
     <div class="page-content">
         <article id="main">
   <header class="special container">
-    <span class="icon suitcase"></span>
-    <h2 class="post-title">Moving to Raleigh to work for Infusion</h2>
-    <p class="post-meta">Jun 4, 2014</p>
+    <span class="icon ruby"></span>
+    <h2 class="post-title">Ruby Script for sorting photos by year and month</h2>
+    <p class="post-meta">Oct 24, 2013</p>
   </header>
 
   <section class="style4 wrapper container">
-    <p>The time has come for me to pack my bags and move south. I’ve been in Pittsburgh, PA since I graduated from <a href="http://www.edinboro.edu/">Edinboro University</a> in 2003, and even a few years before college. Living and working in the burgh, I’ve gained a lot of experience and had the pleasure working with many really talented people. But, alas, the weather has finally gotten to my wife and me. Plus, my son is starting 2nd grade in the fall! and I fear that if we don’t move soon, we’ll never leave.</p>
+    <p>Today, I worked on a personal project in Ruby that would sort my ever expanding library of family photos into a common folder structure. I like the way iTunes handles this by sorting them into sub-folders as /year/month the photo was taken so that’s what I went with.</p>
 
-<p>I was offered an Interactive Developer role with a big New York company called <a href="http://www.infusion.com/">Infusion</a>. Infusion is opening an office in Raleigh, NC and I’ll be part of the many new hires for that team.</p>
+<pre><code class="language-ruby">#!/usr/bin/env ruby
 
-<p>It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?</p>
+# Summary:
+# This utility will take each jpg, png, gif in the specified directory, including sub-directories, and 
+# copy it to the specified output directory (optional) for the year and month the photo was taken/created. 
+# (example:  ./unsorted/image.jpg -&gt; ./sorted/2013/10/image.jpg)
+# 
+# Code Author: Jason Savage
+#------------------------------------------
+
+require 'exifr'
+require 'fileutils'
+
+def run()
+  
+  return if ARGV.length &lt; 1
+  
+  # get dir argument
+  in_dir  = ARGV[0]
+  out_dir = ARGV[1] || in_dir
+  
+  # fix path if on windows
+  in_dir = in_dir.gsub(%r{\\}) { "/" }
+  out_dir = out_dir.gsub(%r{\\}) { "/" }
+  
+  puts 'in: ' + in_dir, 'out: ' + out_dir
+  
+  if Dir.exist? in_dir
+    
+    # loop through each *.jpg in the folder and move to dir/#{year}/
+    Dir.glob( in_dir + '/**/*.{jpg,png,gif}') do |file|
+      
+      move_file(out_dir, file)
+      
+    end
+    
+  end
+  
+end;
+
+def move_file(dir, file)
+  
+  date_time = EXIFR::JPEG.new(file).date_time || File.mtime( file )
+  
+  if date_time != nil &amp;&amp; date_time.year != ''
+    
+    # get path as #{dir}/year/month
+    out_dir = File.join(dir, date_time.year.to_s, zero_pad(date_time.month.to_s))
+    
+    # create #{dir}/year/month if it doesn't exist?
+    FileUtils.mkdir_p out_dir unless Dir.exist?(out_dir)
+    
+    # check if image file name is already used
+    i     = 1
+    ext   = File.extname(file)
+    fname = File.basename(file, ext)
+    
+    while File.exist? File.join(out_dir, fname + ext) 
+      fname = File.basename(file, ext) + '_' + i.to_s
+      i += 1
+    end
+    
+    # move file to new directory
+    FileUtils.cp( file, File.join(out_dir, fname + ext) )
+    
+  end
+  
+end
+
+
+def zero_pad(str)
+  
+  if str.to_f &lt; 10
+    return '0' + str
+  end
+  return str
+  
+end
+
+# run script
+run if __FILE__ == 'photo_date_sort.rb'
+</code></pre>
 
   </section>
 
     <footer>
         
-        <a href="/blog/date-strings-from-twitter-and-facebook-invalid.html" class="post-prev">&larr; Previous post</a> 
+        <a href="/blog/sql-to-find-distance-based-on-latitude-and-longitude.html" class="post-prev">&larr; Previous post</a> 
         
-        <a href="/blog/angularjs-custom-data-table-example.html" class="post-next">Next post &rarr;</a> 
+        <a href="/blog/how-to-extend-a-javascript-pseudo-class.html" class="post-next">Next post &rarr;</a> 
     </footer>
 </article>
 

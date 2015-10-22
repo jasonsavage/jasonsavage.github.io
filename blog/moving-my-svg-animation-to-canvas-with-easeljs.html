@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Moving my SVG Animation to Canvas with EaselJS (follow-up post)</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon javascript"></span>
+    <h2 class="post-title">Moving my SVG Animation to Canvas with EaselJS (follow-up post)</h2>
+    <p class="post-meta">May 5, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>This is a follow-up to the previous post titled “SVG Animation With Clip Paths and Linear Gradients”. I was able you port the SVG animation over to the &lt;canvas /&gt; using <a href="http://www.createjs.com/#!/EaselJS">EaselJS</a>. It wasn’t too bad, I was having a lot of trouble converting the SVG path data that was exported from illustrator, but that all changed when my co-worker found this site: <a href="http://www.professorcloud.com/svg-to-canvas/">www.professorcloud.com/svg-to-canvas/</a>.</p>
+
+<p>Here is the code I ended up with that re-created the animation from before:</p>
+<pre><code class="language-javascript">function initCanvasHeart(canvasId) {
+    var stage       = new createjs.Stage(canvasId),
+        goldRect    = new createjs.Shape(),
+        greenRect   = new createjs.Shape(),
+        blueRect    = new createjs.Shape(),
+        goldMsk     = new createjs.Shape(),
+        greenMsk    = new createjs.Shape(),
+        blueMsk     = new createjs.Shape(),
+        aa          = new createjs.Shape(),
+        width       = stage.canvas.width,
+        height      = stage.canvas.height,
+        rectWidth   = width / 0.4;
+    
+    //create gold rect
+    goldRect.graphics
+        .beginLinearGradientFill(
+            ["#FFC423", "#ffe191", "#FFC423"], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    goldRect.x = width-rectWidth;
+    goldRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(goldRect);
+    
+    //create gold rect mask
+    drawGoldStrip( goldMsk.graphics.beginFill("#000000") );
+    goldRect.mask = goldMsk;
+    
+    //create green rect
+    greenRect.graphics
+        .beginLinearGradientFill(
+            ["#6EB43F", "#b6d99f", "#6EB43F"], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    greenRect.x = width-rectWidth;
+    greenRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(greenRect);
+    
+    //create green rect mask
+    drawGreenStrip( greenMsk.graphics.beginFill("#000000") );
+    greenRect.mask = greenMsk;
+    
+    //create blue rect
+    blueRect.graphics
+        .beginLinearGradientFill(
+            ["#0083C8", "#7fc1e3", "#0083C8"], 
+            [0.4, 0.5, 0.6], 0, 0, rectWidth, 0)
+        .drawRect(0, 0, rectWidth, height);
+
+    blueRect.x = width-rectWidth;
+    blueRect.cache(0,0,rectWidth, height);
+    
+    //add it to the canvas
+    stage.addChild(blueRect);
+    
+    //create blue rect mask
+    drawBlueStrip( blueMsk.graphics.beginFill("#000000") );
+    blueRect.mask = blueMsk;
+    
+    //add a layer to fix anti-aliasing in Chrome
+    //- the mask in chrome was really pixelated compared to Firefox
+    aa.graphics.setStrokeStyle(1, 1, 1, 2);
+    drawGreenStrip( aa.graphics.beginStroke("#6EB43F") ).endStroke();
+    drawGoldStrip( aa.graphics.beginStroke("#FFC423") ).endStroke();
+    drawBlueStrip( aa.graphics.beginStroke("#0083C8") ).endStroke();
+    aa.cache(0, 0, width, height);
+    stage.addChild(aa);
+
+    //add animations
+    //using TweenJS that is part of EaselJS, we can create a simple repeating animation
+    createjs.Tween.get(goldRect, {loop:true}).to({x: 0 }, 8000);
+    createjs.Tween.get(greenRect, {loop:true}).to({x: 0 }, 8000);
+    createjs.Tween.get(blueRect, {loop:true}).to({x: 0 }, 8000);
+    
+    //add an event listener to the internal ticker object to update the stage, 
+    //otherwise we won't see the animation
+    createjs.Ticker.addEventListener("tick", function( evt ) { 
+        stage.update();
+    });
+}
+
+//these method were each generated by:
+//http://www.professorcloud.com/svg-to-canvas/ 
+function drawGreenStrip(g) {
+    g.moveTo(72.603,317.736);
+    g.bezierCurveTo(71.87,316.727,74.997,320.537,72.603,317.736);
+    g.bezierCurveTo(63.166,306.699,37.833999999999996,281.177,25.986999999999995,258.153);
+    g.bezierCurveTo(-0.2700000000000067,207.12500000000003,-12.807000000000002,128.69500000000002,18.386999999999993,68.50900000000001);
+    g.bezierCurveTo(38.157,30.357,72.942,6.779,118.972,0.328);
+    g.bezierCurveTo(122.661,0.096,126.004,0,129.237,0);
+    g.bezierCurveTo(180.874,0,240.743,26.183,251.61399999999998,145.724);
+    g.lineTo(251.61399999999998,145.724);    g.bezierCurveTo(224.38899999999998,88.70599999999999,175.11599999999999,64.73599999999999,124.02599999999998,79.07799999999999);
+    g.bezierCurveTo(96.53399999999998,86.79299999999999,72.37499999999997,114.35999999999999,60.29699999999998,146.654);
+    g.bezierCurveTo(42.154,195.165,42.749,259.684,72.603,317.736);
+    g.lineTo(72.603,317.736);
+    g.closePath();
+    return g;
+}
+   
+function drawGoldStrip(g) {
+    g.moveTo(446.57,41.168);
+    g.bezierCurveTo(423.02,17.616,391.671,4.649,358.286,4.649);
+    g.bezierCurveTo(310.154,4.649,265.962,31.224,249.12099999999998,69.678);
+    g.bezierCurveTo(253.90999999999997,82.536,257.52799999999996,97.475,259.68199999999996,114.699);
+    g.bezierCurveTo(279.698,91.652,307.98499999999996,77.94200000000001,335.94599999999997,77.94200000000001);
+    g.bezierCurveTo(358.849,77.94200000000001,379.186,87.218,391.736,103.39500000000001);
+    g.bezierCurveTo(407.001,123.06200000000001,410.514,151.238,401.897,184.871);
+    g.bezierCurveTo(389.59499999999997,232.871,326.669,325.246,243.46599999999998,359.457);
+    g.bezierCurveTo(244.652,359.401,276.452,359.675,295.70399999999995,354.659);
+    g.bezierCurveTo(372.371,334.659,441.4409999999999,277.092,459.236,242.862);
+    g.bezierCurveTo(490.488,182.738,503.576,98.174,446.57,41.168);
+    g.closePath();
+    return g;
+}
+   
+function drawBlueStrip(g) {
+    g.moveTo(239.213,444.16);
+    g.bezierCurveTo(218.941,444.16,205.017,435.036,187.38,423.485);
+    g.bezierCurveTo(183.989,421.265,180.448,418.94100000000003,176.668,416.56);
+    g.bezierCurveTo(152.79000000000002,401.536,106.22800000000001,355.632,96.757,342.354);
+    g.bezierCurveTo(67.397,301.205,44.056000000000004,186.868,72.796,146.81599999999997);
+    g.lineTo(79.569,137.36399999999998);
+    g.lineTo(80.349,148.96899999999997);
+    g.bezierCurveTo(83.259,192.36699999999996,93.43100000000001,212.12199999999996,111.904,247.97699999999998);
+    g.bezierCurveTo(137.74599999999998,298.144,195.71699999999998,360.70899999999995,248.362,371.56399999999996);
+    g.bezierCurveTo(307.151,369.43199999999996,356.589,351.84,428.28700000000003,299.106);
+    g.lineTo(428.28700000000003,299.106);
+    g.bezierCurveTo(401.58700000000005,335.235,329.206,400.438,291.47900000000004,424.78499999999997);
+    g.bezierCurveTo(277.495,433.81,258.921,444.16,239.213,444.16);
+    g.closePath();
+    return g;
+}
+</code></pre>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/svg-animation-with-clip-path-and-linear-gradients.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/date-strings-from-twitter-and-facebook-invalid.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>
