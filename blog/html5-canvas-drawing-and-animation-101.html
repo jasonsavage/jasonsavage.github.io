@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>HTML5 Canvas Drawing and Animation 101 (no frameworks!)</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/html5-canvas-drawing-and-animation-101.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon javascript"></span>
+    <h2 class="post-title">HTML5 Canvas Drawing and Animation 101 (no frameworks!)</h2>
+    <p class="post-meta">Apr 29, 2015</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <div class="txt-c"><img src="/assets/images/network_animation_screen.jpg" /></div>
+<p><br />The other day I had some downtime and decided to mess around with drawing and animating with the canvas tag. As far as I can tell, unless your building a game or some 3D interactive thing on the web, you probably should opt for <a href="https://developer.mozilla.org/en-US/docs/Web/SVG">svg</a> vector drawing and/or animation since they are way simpler.</p>
+
+<p>For drawing with the canvas element, I recommend one of these great frameworks to ease development: <a href="http://www.createjs.com/EaselJS">EaselJS</a> and <a href="http://threejs.org/">Three.js</a>.</p>
+
+<p>For this experiment, I thought I’d just write vanilla JavaScript since I was just messing around and didn’t want to spend a lot of time reading documentation. After a few hours, I end up with a neat little network of dots animation.</p>
+
+<h3 id="the-canvas-tag">The canvas tag</h3>
+<p>First off, we need some JavaScript to add the canvas tag to the page. You can always just write the &lt;canvas /&gt; tag in the body of the page and give it an id, so whichever you prefer.</p>
+<pre><code class="language-javascript">var canvas = document.createElement('canvas');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+document.body.appendChild(canvas);
+</code></pre>
+
+<h3 id="requestanimationframe">requestAnimationFrame()</h3>
+<p>Now for the heart of our application, the looper function. This is the function that will repeat over and over again and draw each frame of our animation, just like the frames of a movie. For this, it is recommended that we use the <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">requestAnimationFrame() method</a> in JavaScript instead of setInterval() since it is geared towards animating elements on the screen and will perform better/smoother. Plus, if the tab or window is inactive, the animation stops which is better for the computer’s CPU.</p>
+
+<pre><code class="language-javascript">var startTime = new Date().getTime(),
+    lastTime = 0;
+
+//start looping
+requestAnimationFrame( looper );
+
+function looper() {
+    requestAnimationFrame( looper );
+
+    //calculate current frame time and delta time
+    //delta time - elapsed time since the last call to the looper method
+    var now = new Date().getTime() - startTime,
+        delta = (now - lastTime)/1000;
+
+    //get the 2d context object
+    var ctx = canvas.getContext('2d');
+
+    //clear all graphics from the canvas
+    ctx.clearRect(0 , 0 , canvas.width , canvas.height);
+
+    //update game physics (animations)
+    update( delta );
+
+    //render everything back to the canvas
+    draw( ctx );
+    
+    //save the current time for next loop
+    lastTime = now;
+}
+
+//these 2 methods will be finished below
+function update(delta) { }
+
+function draw(ctx) { }
+</code></pre>
+
+<p>In the code above, I ended up not using delta time in my experiment, but if you are building a serious app or game be sure to take a look at some blog post about it: <a href="http://gafferongames.com/game-physics/fix-your-timestep/">Fix Your Timestep</a>. There is also quite a bit more code you’ll need to make sure your game runs at a constant speed no matter what computer or browser it’s running on.</p>
+
+<h3 id="the-network-of-dots">The network of dots</h3>
+
+<p>Now to talk about what we are drawing/animating. In the picture above we have an array of orange circles (nodes) and a bunch of green lines (links) that are chasing each other around the screen. When one node catches it’s target the link is broken and the node stops moving. In the code I represent each orange circle as a node agent. An agent is basically just an object that keeps track of the current values for one of the circles on the screen. This way, our draw function ends up being rather simple. Just loop over all node agents in the array and draw them on the screen.</p>
+
+<pre><code class="language-javascript">//create network of nodes
+var nodesArray = createNodes(200, canvas);
+
+//This method will create an array of node agents to 
+//be drawn on the screen
+function createNodes(size, canvas) {
+    var nodes = [];
+
+    for(var i = 0; i &lt; size; i++ ){
+        //Here we create an agent at a random x, y position
+        //with a random radius that is between 5px and 25px
+        nodes.push(
+            createNodeAgent(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                5 + (Math.random() * 20)
+            )
+        );
+    }
+    return nodes;
+}
+//This is a factory function that return a new node agent object
+function createNodeAgent(x, y, r) {
+    return {
+        x : x,
+        y : y,
+        radius : r,
+        //Here we give it the orange color and set the alpha
+        //based on this agent's size (bigger means more opaque)
+        color : "rgba(161,96,9," + r/30 + ")",
+        link : -1
+    };
+}
+</code></pre>
+
+<p>With our array of nodes we can finish writing the draw method which will fill our canvas with a background color and draw each node agent on the screen.</p>
+<pre><code class="language-javascript">function draw(ctx) {
+    //fill screen with black background
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    //draw all nodes
+    nodesArray.forEach(function (agent) {
+        drawNode(ctx, agent);
+    });
+}
+function drawNode(ctx, agent) {
+    ctx.beginPath();
+    ctx.arc(agent.x, agent.y, agent.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = agent.color;
+    ctx.fill();
+}
+</code></pre>
+
+<p>At this point, you should be able to run the app and see all the circles on the screen. Every time you refresh the screen they are placed at random spots on the screen which nice, but having motion would be alot better. Lets finish the update method and make this happen.</p>
+
+<p>One thing we need to do first though is figure out how to get the nodes to chase a target node. For this we will use one of the properties we added above to each node called “link”. Link is going to be the index of another node in our master array. We could just pick one at random from the master array, but after a few test, it looked much nicer when nodes that are closest to each other are linked together. You end up with more of a networking effect this way.</p>
+<pre><code class="language-javascript">//connect all nodes to the target node that it is closest to.
+linkNodes(nodesArray);
+
+function linkNodes(nodes) {
+    nodes.forEach(function (agent, idx) {
+        //check how far all other agents are from this agent
+        var dists = nodes.map(function (agentToCheck, i) {
+            return Math.abs(agent.x - agentToCheck.x) + Math.abs(agent.y - agentToCheck.y);
+        });
+
+        //find the next closest agent thats not already linked
+        var closest = 0,
+            dist = 99999;
+
+        dists.forEach(function (distance, i) {
+            if(distance &lt; dist &amp;&amp; nodes[i] !== agent &amp;&amp; nodes[i].link === -1) {
+                dist = distance;
+                closest = i;
+            }
+        });
+        agent.link = closest;
+    });
+}
+</code></pre>
+
+<p>I’ll admit, this method isn’t pretty and there is probably a better way to do this, but it works for this example.</p>
+
+<p>With this method, we have iterated through each node and gave it a target node to chase. Now we can finish the update method. The update method will slowly step each node towards it’s target until it gets within a certain distance. When is distance is reached, the node will clear the link and stop moving.</p>
+<pre><code class="language-javascript">function update(delta) {
+
+    //nodes move towards the agent its connected to
+    nodesArray.forEach(function (agent) {
+        //if this agent still has a target, update position
+        if(agent.link !== -1) {
+            //find target node in master array
+            var targetAgent = nodesArray[agent.link];
+            
+            //step this agent towards the target agent using
+            //a simple easing function
+            agent.x = chase(agent.x, targetAgent.x, 100);
+            agent.y = chase(agent.y, targetAgent.y, 100);
+            
+            //check to see if we are next the our target node
+            var distX = Math.abs(agent.x-targetAgent.x),
+                distY = Math.abs(agent.y-targetAgent.y),
+                min = (agent.radius + targetAgent.radius);
+
+            //if we are then clear link and stop moving
+            if(distX &lt; min &amp;&amp; distY &lt; min){
+                agent.link = -1;
+            }
+        }
+    });
+}
+function chase(current, target, constant) {
+    var change = (target - current) / constant;
+    return current + change;
+)
+</code></pre>
+
+<p>This is getting better! So when you run your app, you should see all the dot slowly chasing there targets around the screen. You can add all kinds of cool math here and see what happens, also if you haven’t noticed, what we have here is the start of a basic <a href="http://natureofcode.com/book/chapter-4-particle-systems/">Particle System</a>. From here we can start looking into velocity and force and all kinds of neat things. But, in the spirit of not re-inventing the wheel, we should probably defer to a fully tested framework for more advanced topics.</p>
+
+<p>Before I finish, you might be wondering where all the lines in the image at the top are. Lets revise our update method and add a function to draw the lines between each linked agent.</p>
+<pre><code class="language-javascript">function draw(ctx) {
+    //fill screen with black background
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    //first pass, draw all links
+    nodesArray.forEach(function (agent) {
+        if(agent.link !== -1) {
+            var linkedAgent = nodes[agent.link];
+            drawLink(ctx, agent, linkedAgent);
+        }
+    });
+
+    //second pass, draw all nodes
+    nodesArray.forEach(function (agent) {
+        drawNode(ctx, agent);
+    });
+}
+
+function drawLink(ctx, agent, linkedAgent) {
+   ctx.beginPath();
+   ctx.moveTo(agent.x, agent.y);
+   ctx.lineTo(linkedAgent.x, linkedAgent.y);
+
+   //line style
+   ctx.lineWidth = 5;
+   ctx.lineCap = 'round';
+   ctx.strokeStyle = 'rgba(161,174,20,0.5)';
+
+   //draw
+   ctx.stroke();
+
+   //cleanup
+   ctx.lineWidth = 0;
+}
+</code></pre>
+
+<p>Happy Coding!</p>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/instead-of-ng-include-try-an-angularjs-directive.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/tips-for-building-angularjs-forms-with-validation.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

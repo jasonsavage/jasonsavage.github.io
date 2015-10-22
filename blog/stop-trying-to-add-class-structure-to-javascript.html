@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Stop trying to add class structure to JavaScript</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/stop-trying-to-add-class-structure-to-javascript.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon javascript"></span>
+    <h2 class="post-title">Stop trying to add class structure to JavaScript</h2>
+    <p class="post-meta">Dec 19, 2014</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>Recently, I read a great article titled <a href="https://medium.com/javascript-scene/the-two-pillars-of-javascript-ee6f3281e7f3">The Two Pillars of Javascript</a>, and one of the points of the article that I found interesting was the part about trying to create classes in JavaScript. Stop trying to create class structure in JavaScript? But, I thought classes and <a href="http://en.wikipedia.org/wiki/Object-oriented_programming">OOP</a> are how we should be programming, plus classes are everywhere in .NET, Java and Ruby.</p>
+
+<p>The article talks about how JavaScript is not like other languages and how we should embrace the “objects without classes” and “anonymous functions (Lambdas)” structure that it provides. I found this to be an interesting topic because after reading that article, I realized, that in <a href="https://angularjs.org/">AngularJS</a> I’m unconsciously doing this already. With AngularJS you never use the “prototype” or “new” keywords, because your only registering objects or constructor functions.</p>
+
+<p>Ok, lets step back, what are we talking about? Here is how we create an object using class like functionality as shown in a previous post:</p>
+<pre><code class="language-javascript">
+var Car = function(color) {
+    this._wheels = 4;
+    this._condition = 'good';
+    this.initialize(color);
+}
+Car.prototype.initialize = function(color) {
+    this._color = color;
+    ...
+};
+Car.prototype.drive = function(speed) {};
+
+//create a car and drive
+var myCar = new Car(#bada55);
+myCar.drive(90);
+
+//and then extend Car and create a Truck
+var Truck = function(color){
+    this._type = 'pickup';
+    this.initialize(color);
+}
+var tmp = Truck.prototype = new Car();
+Truck.prototype.Car_initialize = tmp.initialize;
+Truck.prototype.initialize = function(color) {
+    this.Car_initialize(color);
+    ...
+};
+Truck.prototype.tow = function(weight){};
+</code></pre>
+
+<p>And this works fine, but how can we do this using just objects and factory methods? The key method you will need is the extend method which we can borrow from jquery $.extend() or any other JavaScript frameworks. The extend method basically copies all the properties and methods from one object to another. You’ve probably used this to create copies of data objects already.</p>
+
+<p>With this method we can do the same operation as above but with factory methods instead of fake classes. For the Truck object, we can just ‘extend’ and internal car object using the extend method.</p>
+
+<pre><code class="language-javascript">
+function createCar (color) {
+    var _color = color,
+        _wheels = 4,
+        _condition = 'good';
+        
+    return {
+        getColor : function () { return _color; },
+        setColor : function (color) {
+            _color = color;
+        },
+        drive : function (speed) {}
+    }
+}
+//and then extend Car and create a Truck
+function createTruck (color) {
+    var _car = createCar(color),
+        _type = 'pickup';
+    
+    //here we can use our extend method to add new methods to truck
+    return $.extend(_car, {
+        getType : function () { return _type; },
+        tow : function (weight) {}
+    });
+}
+
+//now we can create a truck and drive
+var myTruck = createTruck(#bada55);
+console.log(myTruck.getType());
+myTruck.drive(90);
+</code></pre>
+
+<p>One of the great things about this way is you can now have real private variables. There is no way to access _color and _wheels, unless you create getters and setters which is generally a good practice. We can even have private functions inside our factory methods. Here is a Wiki link to learn more about the <a href="http://en.wikipedia.org/wiki/Factory_method_pattern">Factory Method Pattern</a>. This article only covers a small part of it.</p>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/angularjs-custom-data-table-example.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/instead-of-ng-include-try-an-angularjs-directive.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

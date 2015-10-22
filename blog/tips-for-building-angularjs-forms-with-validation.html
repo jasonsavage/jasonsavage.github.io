@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Tips for building AngularJS forms with validation</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/tips-for-building-angularjs-forms-with-validation.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon angular"></span>
+    <h2 class="post-title">Tips for building AngularJS forms with validation</h2>
+    <p class="post-meta">Jun 25, 2015</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>In this article we will be using <a href="https://angularjs.org/">AngularJS 1.3.15</a>, because that’s what version the project I’m currently working on uses. Keep in mind, this stuff changes all the time but, for now, this seems to be the “correct” way.</p>
+
+<p>You’ve probably been using AngularJS for a while now, you also know how forms work, and you probably have forms in you’re AngularJS project that are collecting data and everything is working fine. So why do you still need help with forms? That’s where I was at a few days ago. I’ve been building forms with a basic understanding of <a href="https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngModel">ng-model</a> and <a href="https://code.angularjs.org/1.3.16/docs/api/ng/type/form.FormController">FormController</a>, and they work, but I’ve been writing a lot of extra JavaScript to do it.</p>
+
+<p>A developer on my team, figured out a better way to do a lot of the validation using AngularJS and it’s was so simple. It was right here the whole time: <a href="https://code.angularjs.org/1.3.16/docs/guide/forms">code.angularjs.org/1.3.16/docs/guide/forms</a>.</p>
+
+<p>So, let’s put a contact us form together using <a href="https://angularjs.org/">AngularJS</a> and <a href="http://getbootstrap.com/">Bootstrap</a>.</p>
+<pre><code class="language-javascript">angular.module("mainApp")
+    .controller("ContactCtrl", function ($scope, $log) {
+        "use strict";
+});</code></pre>
+<pre><code class="language-html">&lt;form class=&quot;form-horizontal&quot; name=&quot;contactForm&quot; novalidate&gt;&lt;/form&gt;</code></pre>
+
+<p>Starting with a basic controller and a form template. We already have a ton of stuff setup here thanks to AngularJS. AngularJS adds <a href="https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngForm">ng-form</a> code to all &lt;form&gt; and &lt;ng-form&gt; tags that sets up a property on the $scope that matches the name you gave the form. In this example, even though we didn’t create it, we can now access $scope.contactForm which is an instance of FormController.</p>
+
+<p>For the HTML template, I’m going to copy the code from the link <a href="https://code.angularjs.org/1.3.16/docs/guide/forms">code.angularjs.org/1.3.16/docs/guide/forms</a> to setup a name and email field in our form. Before we use it though, let’s update the code to match what <a href="http://getbootstrap.com/css/#forms-horizontal">Bootstrap</a> has for the basic HTML structure for a horizontal form using their CSS classes.</p>
+<pre><code class="language-html">&lt;form class=&quot;form-horizontal&quot; name=&quot;contactForm&quot;&gt;
+
+    &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;inputName&quot; class=&quot;col-sm-2 control-label&quot;&gt;Name:&lt;/label&gt;
+        &lt;div class=&quot;col-sm-10&quot;&gt;
+            
+            &lt;input type=&quot;text&quot; id=&quot;inputName&quot; name=&quot;uName&quot;
+                   class=&quot;form-control&quot;
+                   placeholder=&quot;Enter your name&quot;
+                   ng-model=&quot;user.name&quot;
+                   required /&gt;
+            
+            &lt;div ng-show=&quot;contactForm.$submitted || contactForm.uName.$touched&quot;&gt;
+                &lt;span ng-show=&quot;contactForm.uName.$error.required&quot;&gt;
+                    Tell us your name.&lt;/span&gt;
+            &lt;/div&gt;
+            
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;form-group&quot;&gt;
+        &lt;label for=&quot;inputEmail&quot; class=&quot;col-sm-2 control-label&quot;&gt;E-mail:&lt;/label&gt;
+        &lt;div class=&quot;col-sm-10&quot;&gt;
+            
+            &lt;input type=&quot;email&quot; id=&quot;inputEmail&quot; name=&quot;uEmail&quot;
+                   class=&quot;form-control&quot;
+                   placeholder=&quot;E-mail&quot;
+                   ng-model=&quot;user.email&quot;
+                   required /&gt;
+            
+            &lt;div ng-show=&quot;contactForm.$submitted || contactForm.uEmail.$touched&quot;&gt;
+                &lt;span ng-show=&quot;contactForm.uEmail.$error.required&quot;&gt;
+                    Tell us your email.&lt;/span&gt;
+                &lt;span ng-show=&quot;contactForm.uEmail.$error.email&quot;&gt;
+                    This is not a valid email.&lt;/span&gt;
+            &lt;/div&gt;
+            
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;form-group&quot;&gt;
+        &lt;div class=&quot;col-sm-offset-2 col-sm-10&quot;&gt;
+            
+            &lt;button type=&quot;button&quot; 
+                    class=&quot;btn btn-default&quot; 
+                    ng-click=&quot;reset()&quot;&gt;Reset&lt;/button&gt;
+            
+            &lt;button type=&quot;submit&quot; 
+                    class=&quot;btn btn-primary&quot; 
+                    ng-click=&quot;save()&quot; 
+                    ng-disabled=&quot;contactForm.$invalid&quot;&gt;Save&lt;/button&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+&lt;/form&gt;</code></pre>
+
+<h3 id="the-name-attribute">The name attribute</h3>
+
+<p>The thing to look at is that on each input we have added a <strong>name</strong> attribute. This is what I was missing when I first tried to setup forms using validation in this way. Adding the name “uName” will in turn add that property to the parent formController instance “contactForm”.</p>
+
+<p>Now, that element’s ng-model scope can be accessed via $scope.contactForm.uName. This is big because then we can easily add validation messages like <strong>ng-show=”contactForm.uEmail.$error.required</strong>” in a list under each form input.</p>
+
+<h3 id="touched">$touched</h3>
+
+<p>Another thing I overlooked was the wrapping div around the validation messages. With out it, as soon as the form loads, we see the required error message and the input it outlined in red. I thought this was an issue with AngularJS and spent a lot of time getting around it, but actually I just need to use the <strong>$touched</strong> property. This will cause the input not to be shown as invalid until the user causes a blur event on the field.</p>
+
+<h3 id="submitted">$submitted</h3>
+
+<p>The last thing I want to point out is the <strong>contactForm.$submitted</strong> property. Since AngularJS converts all form tags to ng-form, they no longer submit to the server by default when you mark a button as <strong>type=”submit”</strong>. What happens is that this property on formController is set to true, which allows us another chance to show any validation errors in the form.</p>
+
+<p>Let’s do a little work on our controller now.</p>
+<pre><code class="language-javascript">angular.module("mainApp")
+    .controller("ContactCtrl", function ($scope, $log, userService) {
+        "use strict";
+
+    //we need to create a new user to hold our form data. 
+    $scope.user = userService.createUser();
+
+    //we'll assume that userService.createUser() returns an object like this:
+    //{ name : "", email : "" };
+
+    $scope.reset = function () {
+        //here we can just do a simple call to create a new user again
+        $scope.user = userService.createUser();
+    };
+
+    $scope.save = function () {
+        //we can use our formController to do a simple check to see if the form is valid
+        if( $scope.contactForm.$valid ) {
+            //all fields are valid, so submit to server.
+            userService.save( $scope.user );
+        }
+    };
+});</code></pre>
+
+<p>As you can see, we can let AngularJS do most of the work with forms and validation. No more if/else statements like this to check all the custom validation on your form elements.</p>
+<pre><code class="language-javascript">$scope.save = function () {
+    if($scope.user.name.length === 0) {
+         $scope.userNameError = "Name is Required!";
+    } else if($scope.user.email.length &gt; 0) {
+         $scope.userEmailError = "Email is Required!";
+    } else if(! isEmail($scope.user.email) ) {
+         $scope.userEmailError = "This is not a valid email.";
+    } else {
+         //form is valid
+         userService.save( $scope.user );
+    }
+};
+</code></pre>
+
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/html5-canvas-drawing-and-animation-101.html" class="post-prev">&larr; Previous post</a> 
+        
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

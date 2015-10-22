@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jason Writes Code</title>
+    <description>My everyday struggles with the web</description>
+    <link>http://locahost:4000/</link>
+    <atom:link href="http://locahost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Wed, 21 Oct 2015 16:49:43 -0400</pubDate>
+    <lastBuildDate>Wed, 21 Oct 2015 16:49:43 -0400</lastBuildDate>
+    <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Tips for building AngularJS forms with validation</title>
+        <description>&lt;p&gt;In this article we will be using &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS 1.3.15&lt;/a&gt;, because that’s what version the project I’m currently working on uses. Keep in mind, this stuff changes all the time but, for now, this seems to be the “correct” way.&lt;/p&gt;
+
+&lt;p&gt;You’ve probably been using AngularJS for a while now, you also know how forms work, and you probably have forms in you’re AngularJS project that are collecting data and everything is working fine. So why do you still need help with forms? That’s where I was at a few days ago. I’ve been building forms with a basic understanding of &lt;a href=&quot;https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngModel&quot;&gt;ng-model&lt;/a&gt; and &lt;a href=&quot;https://code.angularjs.org/1.3.16/docs/api/ng/type/form.FormController&quot;&gt;FormController&lt;/a&gt;, and they work, but I’ve been writing a lot of extra JavaScript to do it.&lt;/p&gt;
+
+&lt;p&gt;A developer on my team, figured out a better way to do a lot of the validation using AngularJS and it’s was so simple. It was right here the whole time: &lt;a href=&quot;https://code.angularjs.org/1.3.16/docs/guide/forms&quot;&gt;code.angularjs.org/1.3.16/docs/guide/forms&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So, let’s put a contact us form together using &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt; and &lt;a href=&quot;http://getbootstrap.com/&quot;&gt;Bootstrap&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;angular.module(&quot;mainApp&quot;)
+    .controller(&quot;ContactCtrl&quot;, function ($scope, $log) {
+        &quot;use strict&quot;;
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;form class=&amp;quot;form-horizontal&amp;quot; name=&amp;quot;contactForm&amp;quot; novalidate&amp;gt;&amp;lt;/form&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Starting with a basic controller and a form template. We already have a ton of stuff setup here thanks to AngularJS. AngularJS adds &lt;a href=&quot;https://code.angularjs.org/1.3.16/docs/api/ng/directive/ngForm&quot;&gt;ng-form&lt;/a&gt; code to all &amp;lt;form&amp;gt; and &amp;lt;ng-form&amp;gt; tags that sets up a property on the $scope that matches the name you gave the form. In this example, even though we didn’t create it, we can now access $scope.contactForm which is an instance of FormController.&lt;/p&gt;
+
+&lt;p&gt;For the HTML template, I’m going to copy the code from the link &lt;a href=&quot;https://code.angularjs.org/1.3.16/docs/guide/forms&quot;&gt;code.angularjs.org/1.3.16/docs/guide/forms&lt;/a&gt; to setup a name and email field in our form. Before we use it though, let’s update the code to match what &lt;a href=&quot;http://getbootstrap.com/css/#forms-horizontal&quot;&gt;Bootstrap&lt;/a&gt; has for the basic HTML structure for a horizontal form using their CSS classes.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;form class=&amp;quot;form-horizontal&amp;quot; name=&amp;quot;contactForm&amp;quot;&amp;gt;
+
+    &amp;lt;div class=&amp;quot;form-group&amp;quot;&amp;gt;
+        &amp;lt;label for=&amp;quot;inputName&amp;quot; class=&amp;quot;col-sm-2 control-label&amp;quot;&amp;gt;Name:&amp;lt;/label&amp;gt;
+        &amp;lt;div class=&amp;quot;col-sm-10&amp;quot;&amp;gt;
+            
+            &amp;lt;input type=&amp;quot;text&amp;quot; id=&amp;quot;inputName&amp;quot; name=&amp;quot;uName&amp;quot;
+                   class=&amp;quot;form-control&amp;quot;
+                   placeholder=&amp;quot;Enter your name&amp;quot;
+                   ng-model=&amp;quot;user.name&amp;quot;
+                   required /&amp;gt;
+            
+            &amp;lt;div ng-show=&amp;quot;contactForm.$submitted || contactForm.uName.$touched&amp;quot;&amp;gt;
+                &amp;lt;span ng-show=&amp;quot;contactForm.uName.$error.required&amp;quot;&amp;gt;
+                    Tell us your name.&amp;lt;/span&amp;gt;
+            &amp;lt;/div&amp;gt;
+            
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;div class=&amp;quot;form-group&amp;quot;&amp;gt;
+        &amp;lt;label for=&amp;quot;inputEmail&amp;quot; class=&amp;quot;col-sm-2 control-label&amp;quot;&amp;gt;E-mail:&amp;lt;/label&amp;gt;
+        &amp;lt;div class=&amp;quot;col-sm-10&amp;quot;&amp;gt;
+            
+            &amp;lt;input type=&amp;quot;email&amp;quot; id=&amp;quot;inputEmail&amp;quot; name=&amp;quot;uEmail&amp;quot;
+                   class=&amp;quot;form-control&amp;quot;
+                   placeholder=&amp;quot;E-mail&amp;quot;
+                   ng-model=&amp;quot;user.email&amp;quot;
+                   required /&amp;gt;
+            
+            &amp;lt;div ng-show=&amp;quot;contactForm.$submitted || contactForm.uEmail.$touched&amp;quot;&amp;gt;
+                &amp;lt;span ng-show=&amp;quot;contactForm.uEmail.$error.required&amp;quot;&amp;gt;
+                    Tell us your email.&amp;lt;/span&amp;gt;
+                &amp;lt;span ng-show=&amp;quot;contactForm.uEmail.$error.email&amp;quot;&amp;gt;
+                    This is not a valid email.&amp;lt;/span&amp;gt;
+            &amp;lt;/div&amp;gt;
+            
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+
+    &amp;lt;div class=&amp;quot;form-group&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;col-sm-offset-2 col-sm-10&amp;quot;&amp;gt;
+            
+            &amp;lt;button type=&amp;quot;button&amp;quot; 
+                    class=&amp;quot;btn btn-default&amp;quot; 
+                    ng-click=&amp;quot;reset()&amp;quot;&amp;gt;Reset&amp;lt;/button&amp;gt;
+            
+            &amp;lt;button type=&amp;quot;submit&amp;quot; 
+                    class=&amp;quot;btn btn-primary&amp;quot; 
+                    ng-click=&amp;quot;save()&amp;quot; 
+                    ng-disabled=&amp;quot;contactForm.$invalid&amp;quot;&amp;gt;Save&amp;lt;/button&amp;gt;
+        &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+
+&amp;lt;/form&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;the-name-attribute&quot;&gt;The name attribute&lt;/h3&gt;
+
+&lt;p&gt;The thing to look at is that on each input we have added a &lt;strong&gt;name&lt;/strong&gt; attribute. This is what I was missing when I first tried to setup forms using validation in this way. Adding the name “uName” will in turn add that property to the parent formController instance “contactForm”.&lt;/p&gt;
+
+&lt;p&gt;Now, that element’s ng-model scope can be accessed via $scope.contactForm.uName. This is big because then we can easily add validation messages like &lt;strong&gt;ng-show=”contactForm.uEmail.$error.required&lt;/strong&gt;” in a list under each form input.&lt;/p&gt;
+
+&lt;h3 id=&quot;touched&quot;&gt;$touched&lt;/h3&gt;
+
+&lt;p&gt;Another thing I overlooked was the wrapping div around the validation messages. With out it, as soon as the form loads, we see the required error message and the input it outlined in red. I thought this was an issue with AngularJS and spent a lot of time getting around it, but actually I just need to use the &lt;strong&gt;$touched&lt;/strong&gt; property. This will cause the input not to be shown as invalid until the user causes a blur event on the field.&lt;/p&gt;
+
+&lt;h3 id=&quot;submitted&quot;&gt;$submitted&lt;/h3&gt;
+
+&lt;p&gt;The last thing I want to point out is the &lt;strong&gt;contactForm.$submitted&lt;/strong&gt; property. Since AngularJS converts all form tags to ng-form, they no longer submit to the server by default when you mark a button as &lt;strong&gt;type=”submit”&lt;/strong&gt;. What happens is that this property on formController is set to true, which allows us another chance to show any validation errors in the form.&lt;/p&gt;
+
+&lt;p&gt;Let’s do a little work on our controller now.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;angular.module(&quot;mainApp&quot;)
+    .controller(&quot;ContactCtrl&quot;, function ($scope, $log, userService) {
+        &quot;use strict&quot;;
+
+    //we need to create a new user to hold our form data. 
+    $scope.user = userService.createUser();
+
+    //we&#39;ll assume that userService.createUser() returns an object like this:
+    //{ name : &quot;&quot;, email : &quot;&quot; };
+
+    $scope.reset = function () {
+        //here we can just do a simple call to create a new user again
+        $scope.user = userService.createUser();
+    };
+
+    $scope.save = function () {
+        //we can use our formController to do a simple check to see if the form is valid
+        if( $scope.contactForm.$valid ) {
+            //all fields are valid, so submit to server.
+            userService.save( $scope.user );
+        }
+    };
+});&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, we can let AngularJS do most of the work with forms and validation. No more if/else statements like this to check all the custom validation on your form elements.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;$scope.save = function () {
+    if($scope.user.name.length === 0) {
+         $scope.userNameError = &quot;Name is Required!&quot;;
+    } else if($scope.user.email.length &amp;gt; 0) {
+         $scope.userEmailError = &quot;Email is Required!&quot;;
+    } else if(! isEmail($scope.user.email) ) {
+         $scope.userEmailError = &quot;This is not a valid email.&quot;;
+    } else {
+         //form is valid
+         userService.save( $scope.user );
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+</description>
+        <pubDate>Thu, 25 Jun 2015 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/tips-for-building-angularjs-forms-with-validation.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/tips-for-building-angularjs-forms-with-validation.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>HTML5 Canvas Drawing and Animation 101 (no frameworks!)</title>
+        <description>&lt;div class=&quot;txt-c&quot;&gt;&lt;img src=&quot;/assets/images/network_animation_screen.jpg&quot; /&gt;&lt;/div&gt;
+&lt;p&gt;&lt;br /&gt;The other day I had some downtime and decided to mess around with drawing and animating with the canvas tag. As far as I can tell, unless your building a game or some 3D interactive thing on the web, you probably should opt for &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/SVG&quot;&gt;svg&lt;/a&gt; vector drawing and/or animation since they are way simpler.&lt;/p&gt;
+
+&lt;p&gt;For drawing with the canvas element, I recommend one of these great frameworks to ease development: &lt;a href=&quot;http://www.createjs.com/EaselJS&quot;&gt;EaselJS&lt;/a&gt; and &lt;a href=&quot;http://threejs.org/&quot;&gt;Three.js&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For this experiment, I thought I’d just write vanilla JavaScript since I was just messing around and didn’t want to spend a lot of time reading documentation. After a few hours, I end up with a neat little network of dots animation.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-canvas-tag&quot;&gt;The canvas tag&lt;/h3&gt;
+&lt;p&gt;First off, we need some JavaScript to add the canvas tag to the page. You can always just write the &amp;lt;canvas /&amp;gt; tag in the body of the page and give it an id, so whichever you prefer.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;var canvas = document.createElement(&#39;canvas&#39;);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+document.body.appendChild(canvas);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;requestanimationframe&quot;&gt;requestAnimationFrame()&lt;/h3&gt;
+&lt;p&gt;Now for the heart of our application, the looper function. This is the function that will repeat over and over again and draw each frame of our animation, just like the frames of a movie. For this, it is recommended that we use the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame&quot;&gt;requestAnimationFrame() method&lt;/a&gt; in JavaScript instead of setInterval() since it is geared towards animating elements on the screen and will perform better/smoother. Plus, if the tab or window is inactive, the animation stops which is better for the computer’s CPU.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;var startTime = new Date().getTime(),
+    lastTime = 0;
+
+//start looping
+requestAnimationFrame( looper );
+
+function looper() {
+    requestAnimationFrame( looper );
+
+    //calculate current frame time and delta time
+    //delta time - elapsed time since the last call to the looper method
+    var now = new Date().getTime() - startTime,
+        delta = (now - lastTime)/1000;
+
+    //get the 2d context object
+    var ctx = canvas.getContext(&#39;2d&#39;);
+
+    //clear all graphics from the canvas
+    ctx.clearRect(0 , 0 , canvas.width , canvas.height);
+
+    //update game physics (animations)
+    update( delta );
+
+    //render everything back to the canvas
+    draw( ctx );
+    
+    //save the current time for next loop
+    lastTime = now;
+}
+
+//these 2 methods will be finished below
+function update(delta) { }
+
+function draw(ctx) { }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In the code above, I ended up not using delta time in my experiment, but if you are building a serious app or game be sure to take a look at some blog post about it: &lt;a href=&quot;http://gafferongames.com/game-physics/fix-your-timestep/&quot;&gt;Fix Your Timestep&lt;/a&gt;. There is also quite a bit more code you’ll need to make sure your game runs at a constant speed no matter what computer or browser it’s running on.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-network-of-dots&quot;&gt;The network of dots&lt;/h3&gt;
+
+&lt;p&gt;Now to talk about what we are drawing/animating. In the picture above we have an array of orange circles (nodes) and a bunch of green lines (links) that are chasing each other around the screen. When one node catches it’s target the link is broken and the node stops moving. In the code I represent each orange circle as a node agent. An agent is basically just an object that keeps track of the current values for one of the circles on the screen. This way, our draw function ends up being rather simple. Just loop over all node agents in the array and draw them on the screen.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;//create network of nodes
+var nodesArray = createNodes(200, canvas);
+
+//This method will create an array of node agents to 
+//be drawn on the screen
+function createNodes(size, canvas) {
+    var nodes = [];
+
+    for(var i = 0; i &amp;lt; size; i++ ){
+        //Here we create an agent at a random x, y position
+        //with a random radius that is between 5px and 25px
+        nodes.push(
+            createNodeAgent(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                5 + (Math.random() * 20)
+            )
+        );
+    }
+    return nodes;
+}
+//This is a factory function that return a new node agent object
+function createNodeAgent(x, y, r) {
+    return {
+        x : x,
+        y : y,
+        radius : r,
+        //Here we give it the orange color and set the alpha
+        //based on this agent&#39;s size (bigger means more opaque)
+        color : &quot;rgba(161,96,9,&quot; + r/30 + &quot;)&quot;,
+        link : -1
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With our array of nodes we can finish writing the draw method which will fill our canvas with a background color and draw each node agent on the screen.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;function draw(ctx) {
+    //fill screen with black background
+    ctx.fillStyle = &#39;black&#39;;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    //draw all nodes
+    nodesArray.forEach(function (agent) {
+        drawNode(ctx, agent);
+    });
+}
+function drawNode(ctx, agent) {
+    ctx.beginPath();
+    ctx.arc(agent.x, agent.y, agent.radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = agent.color;
+    ctx.fill();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;At this point, you should be able to run the app and see all the circles on the screen. Every time you refresh the screen they are placed at random spots on the screen which nice, but having motion would be alot better. Lets finish the update method and make this happen.&lt;/p&gt;
+
+&lt;p&gt;One thing we need to do first though is figure out how to get the nodes to chase a target node. For this we will use one of the properties we added above to each node called “link”. Link is going to be the index of another node in our master array. We could just pick one at random from the master array, but after a few test, it looked much nicer when nodes that are closest to each other are linked together. You end up with more of a networking effect this way.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;//connect all nodes to the target node that it is closest to.
+linkNodes(nodesArray);
+
+function linkNodes(nodes) {
+    nodes.forEach(function (agent, idx) {
+        //check how far all other agents are from this agent
+        var dists = nodes.map(function (agentToCheck, i) {
+            return Math.abs(agent.x - agentToCheck.x) + Math.abs(agent.y - agentToCheck.y);
+        });
+
+        //find the next closest agent thats not already linked
+        var closest = 0,
+            dist = 99999;
+
+        dists.forEach(function (distance, i) {
+            if(distance &amp;lt; dist &amp;amp;&amp;amp; nodes[i] !== agent &amp;amp;&amp;amp; nodes[i].link === -1) {
+                dist = distance;
+                closest = i;
+            }
+        });
+        agent.link = closest;
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I’ll admit, this method isn’t pretty and there is probably a better way to do this, but it works for this example.&lt;/p&gt;
+
+&lt;p&gt;With this method, we have iterated through each node and gave it a target node to chase. Now we can finish the update method. The update method will slowly step each node towards it’s target until it gets within a certain distance. When is distance is reached, the node will clear the link and stop moving.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;function update(delta) {
+
+    //nodes move towards the agent its connected to
+    nodesArray.forEach(function (agent) {
+        //if this agent still has a target, update position
+        if(agent.link !== -1) {
+            //find target node in master array
+            var targetAgent = nodesArray[agent.link];
+            
+            //step this agent towards the target agent using
+            //a simple easing function
+            agent.x = chase(agent.x, targetAgent.x, 100);
+            agent.y = chase(agent.y, targetAgent.y, 100);
+            
+            //check to see if we are next the our target node
+            var distX = Math.abs(agent.x-targetAgent.x),
+                distY = Math.abs(agent.y-targetAgent.y),
+                min = (agent.radius + targetAgent.radius);
+
+            //if we are then clear link and stop moving
+            if(distX &amp;lt; min &amp;amp;&amp;amp; distY &amp;lt; min){
+                agent.link = -1;
+            }
+        }
+    });
+}
+function chase(current, target, constant) {
+    var change = (target - current) / constant;
+    return current + change;
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is getting better! So when you run your app, you should see all the dot slowly chasing there targets around the screen. You can add all kinds of cool math here and see what happens, also if you haven’t noticed, what we have here is the start of a basic &lt;a href=&quot;http://natureofcode.com/book/chapter-4-particle-systems/&quot;&gt;Particle System&lt;/a&gt;. From here we can start looking into velocity and force and all kinds of neat things. But, in the spirit of not re-inventing the wheel, we should probably defer to a fully tested framework for more advanced topics.&lt;/p&gt;
+
+&lt;p&gt;Before I finish, you might be wondering where all the lines in the image at the top are. Lets revise our update method and add a function to draw the lines between each linked agent.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;function draw(ctx) {
+    //fill screen with black background
+    ctx.fillStyle = &#39;black&#39;;
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    //first pass, draw all links
+    nodesArray.forEach(function (agent) {
+        if(agent.link !== -1) {
+            var linkedAgent = nodes[agent.link];
+            drawLink(ctx, agent, linkedAgent);
+        }
+    });
+
+    //second pass, draw all nodes
+    nodesArray.forEach(function (agent) {
+        drawNode(ctx, agent);
+    });
+}
+
+function drawLink(ctx, agent, linkedAgent) {
+   ctx.beginPath();
+   ctx.moveTo(agent.x, agent.y);
+   ctx.lineTo(linkedAgent.x, linkedAgent.y);
+
+   //line style
+   ctx.lineWidth = 5;
+   ctx.lineCap = &#39;round&#39;;
+   ctx.strokeStyle = &#39;rgba(161,174,20,0.5)&#39;;
+
+   //draw
+   ctx.stroke();
+
+   //cleanup
+   ctx.lineWidth = 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Happy Coding!&lt;/p&gt;
+</description>
+        <pubDate>Wed, 29 Apr 2015 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/html5-canvas-drawing-and-animation-101.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/html5-canvas-drawing-and-animation-101.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Instead of ng-include, try an AngularJS directive</title>
+        <description>&lt;p&gt;Recently, I came across a lot of code in an &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt; project I’m working on that uses ng-include. Up to now, haven’t really used ng-include in Angular very much. Instead, whenever I need to reuse a chunk of HTML, I just use create a custom AngularJS directive. Looking back at how I’ve been using directives, a ng-include might have been a better choice in some places.&lt;/p&gt;
+
+&lt;p&gt;With that being said, I still think that in most situations, you are better off splitting up functionality into directives. Many of the places in the current Angular project I’m working on where ng-include is being used, a directive would have been a much better choice. So how to know when to use one or the other? One big red flag is if you are thinking of using the ng-init, ng-controller attributes. These have their uses, but, I believe should be avoided when building your application.&lt;/p&gt;
+
+&lt;h3 id=&quot;ng-include-example&quot;&gt;ng-include example&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;!-- app/views/properties.html --&amp;gt;
+&amp;lt;div class=&amp;quot;properties&amp;quot; ng-controller=&amp;quot;propertiesCtrl&amp;quot;&amp;gt;
+    &amp;lt;form class=&amp;quot;form-horizontal&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;form-group&amp;quot; 
+             ng-repeat=&amp;quot;key in currentElement.props&amp;quot; 
+             ng-include=&amp;quot;&amp;#39;app/views/properties/main.html&amp;#39;&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+    &amp;lt;/form&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;!-- app/views/properties/main.html --&amp;gt;
+&amp;lt;label class=&amp;quot;col-md-3 control-label&amp;quot;&amp;gt;
+    &amp;#123;&amp;#123;key | capitalize&amp;#125;&amp;#125; :
+&amp;lt;/label&amp;gt;
+&amp;lt;div class=&amp;quot;col-md-7&amp;quot;
+     ng-include=&amp;quot;&amp;#39;composer/flowDesigner/views/properties/controls/DEFAULT.html&amp;#39;&amp;quot;&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The code above is basically the reason why directives were created in Angular. A directive allows you to create a chuck on code that can be expressed as a tag, a pseudo web component if you will. Directives also allows us to isolate functionality and reduce the amount of code that is in a “page” controller.&lt;/p&gt;
+
+&lt;h3 id=&quot;directive-example&quot;&gt;directive example&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;angular(&quot;mainApp&quot;)
+    // We define the name of the directive with a prefix. The prefix helps to 
+    // distinguish our custom html directive tags from actual html tags
+    // example : &amp;lt;com-header&amp;gt; vs &amp;lt;header&amp;gt;
+    //
+    // NOTE: Angular converts camel case to dash case when rendering directives. 
+    //       So in our html page, we will use &amp;lt;com-properties&amp;gt; instead of &amp;lt;comProperies&amp;gt;
+    .directive(&quot;comProperies&quot;, function () {
+        &quot;use strict&quot;;
+
+        return {
+            // restrict how this directive can be used, E means as an html tag only
+            restrict: &quot;E&quot;,
+ 
+            // replace the tag on the page with the template of this directive
+            replace: true, 
+
+            // path to our html template
+            templateUrl: &quot;app/views/comProperies.tpl.html&quot;,
+
+            // html to JS linking function
+            link: properiesLink,
+
+            // this directive&#39;s controller function
+            // NOTE: Start with a capital letter since angular uses controller like 
+            //       pseudo classes
+            controller: ProperiesCtrl
+        };
+  
+        function properiesLink($scope, $element, $attrs) {
+            // The linking function allows us to add any html manipulation we might need.
+            // Basically, if you are using jQuery &quot;$&quot; selector function for anything, 
+            // add it here.
+            //
+            // NOTE: Try to avoid using a linking function. Angular has a lot of directives 
+            //       you can add to your template file so you don&#39;t need one. 
+            //       If you are doing anything with the $attrs object, use $attrs.$observe. 
+            //       This will trigger a function if the value of an attribute ever changes.
+            //       $element is a jQuery reference to your template&#39;s root html element.
+        }
+  
+        function ProperiesCtrl($scope) {
+            // A basic controller function for this directive. One thing to remember is that 
+            // all instances of this directive use the same controller. So, for example, 
+            // &quot;this.currentIndex = 0;&quot; would be a global variable among all 
+            // &amp;lt;com-properties&amp;gt; elements.
+        }
+    });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Not too much has changed in this example except for code structure. The real advantage can be seen as you start to expand functionality of this directive. For example, this directive looks like it creates a form and lists out the properties in currentElement.props so that they can be edited. Now we want to list out the properties of currentPlan.details. By re-using the “ng-model” attribute that is provided by angular. We can update the custom directive html element so it can be written as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;com-properties ng-model=”currentPlan.details”&amp;gt;&amp;lt;/com-properties&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To make this update, first inside our template, find and change &lt;strong&gt;ng-repeat=”key in mainTabKeys”&lt;/strong&gt; to &lt;strong&gt;ng-repeat=”key in ngModel”&lt;/strong&gt;. Next, add &lt;strong&gt;scope : {ngModel : “=” }&lt;/strong&gt; to the return object in the directive so now our directive looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;angular(&quot;mainApp&quot;)
+    .directive(&quot;comProperies&quot;, function () {
+        &quot;use strict&quot;;
+
+        return {
+            restrict: &quot;E&quot;,
+            replace: true, 
+            templateUrl: &quot;app/views/comProperies.tpl.html&quot;,
+            link: properiesLink,
+            controller: ProperiesCtrl,
+            scope : { 
+                ngModel : &quot;=&quot; 
+            }
+        };
+        
+        // ...
+    });
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With this change, this directive will now list out all the properties of whatever object the attribute &lt;strong&gt;ng-model&lt;/strong&gt; is set to. I encourage you to read more about directive by following the links below, since this article is a very limited overview of how directives are used in AngularJS.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://code.angularjs.org/1.3.14/docs/guide/directive&quot;&gt;code.angularjs.org/1.3.14/docs/guide/directive&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://code.angularjs.org/1.3.14/docs/api/ng/service/$compile&quot;&gt;code.angularjs.org/1.3.14/docs/api/ng/service/$compile&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 05 Mar 2015 00:00:00 -0500</pubDate>
+        <link>http://locahost:4000/blog/instead-of-ng-include-try-an-angularjs-directive.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/instead-of-ng-include-try-an-angularjs-directive.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Stop trying to add class structure to JavaScript</title>
+        <description>&lt;p&gt;Recently, I read a great article titled &lt;a href=&quot;https://medium.com/javascript-scene/the-two-pillars-of-javascript-ee6f3281e7f3&quot;&gt;The Two Pillars of Javascript&lt;/a&gt;, and one of the points of the article that I found interesting was the part about trying to create classes in JavaScript. Stop trying to create class structure in JavaScript? But, I thought classes and &lt;a href=&quot;http://en.wikipedia.org/wiki/Object-oriented_programming&quot;&gt;OOP&lt;/a&gt; are how we should be programming, plus classes are everywhere in .NET, Java and Ruby.&lt;/p&gt;
+
+&lt;p&gt;The article talks about how JavaScript is not like other languages and how we should embrace the “objects without classes” and “anonymous functions (Lambdas)” structure that it provides. I found this to be an interesting topic because after reading that article, I realized, that in &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt; I’m unconsciously doing this already. With AngularJS you never use the “prototype” or “new” keywords, because your only registering objects or constructor functions.&lt;/p&gt;
+
+&lt;p&gt;Ok, lets step back, what are we talking about? Here is how we create an object using class like functionality as shown in a previous post:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;
+var Car = function(color) {
+    this._wheels = 4;
+    this._condition = &#39;good&#39;;
+    this.initialize(color);
+}
+Car.prototype.initialize = function(color) {
+    this._color = color;
+    ...
+};
+Car.prototype.drive = function(speed) {};
+
+//create a car and drive
+var myCar = new Car(#bada55);
+myCar.drive(90);
+
+//and then extend Car and create a Truck
+var Truck = function(color){
+    this._type = &#39;pickup&#39;;
+    this.initialize(color);
+}
+var tmp = Truck.prototype = new Car();
+Truck.prototype.Car_initialize = tmp.initialize;
+Truck.prototype.initialize = function(color) {
+    this.Car_initialize(color);
+    ...
+};
+Truck.prototype.tow = function(weight){};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And this works fine, but how can we do this using just objects and factory methods? The key method you will need is the extend method which we can borrow from jquery $.extend() or any other JavaScript frameworks. The extend method basically copies all the properties and methods from one object to another. You’ve probably used this to create copies of data objects already.&lt;/p&gt;
+
+&lt;p&gt;With this method we can do the same operation as above but with factory methods instead of fake classes. For the Truck object, we can just ‘extend’ and internal car object using the extend method.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;
+function createCar (color) {
+    var _color = color,
+        _wheels = 4,
+        _condition = &#39;good&#39;;
+        
+    return {
+        getColor : function () { return _color; },
+        setColor : function (color) {
+            _color = color;
+        },
+        drive : function (speed) {}
+    }
+}
+//and then extend Car and create a Truck
+function createTruck (color) {
+    var _car = createCar(color),
+        _type = &#39;pickup&#39;;
+    
+    //here we can use our extend method to add new methods to truck
+    return $.extend(_car, {
+        getType : function () { return _type; },
+        tow : function (weight) {}
+    });
+}
+
+//now we can create a truck and drive
+var myTruck = createTruck(#bada55);
+console.log(myTruck.getType());
+myTruck.drive(90);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;One of the great things about this way is you can now have real private variables. There is no way to access _color and _wheels, unless you create getters and setters which is generally a good practice. We can even have private functions inside our factory methods. Here is a Wiki link to learn more about the &lt;a href=&quot;http://en.wikipedia.org/wiki/Factory_method_pattern&quot;&gt;Factory Method Pattern&lt;/a&gt;. This article only covers a small part of it.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 19 Dec 2014 00:00:00 -0500</pubDate>
+        <link>http://locahost:4000/blog/stop-trying-to-add-class-structure-to-javascript.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/stop-trying-to-add-class-structure-to-javascript.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>AngularJS custom data table example</title>
+        <description>&lt;p&gt;This is probably the first of many post on &lt;a href=&quot;https://angularjs.org/&quot;&gt;AngularJS&lt;/a&gt; since the project I’m on uses AngularJS for the front-end with a Java (Play framework) back-end. I don’t know anything about Play (sorry) but I have picked up quite a lot of Angular in the last few months.&lt;/p&gt;
+
+&lt;p&gt;Feeling like I might be finally getting the hang of AngularJS, I wanted to do a post about the custom data table I just finished. Before You read more, if you want a pre-made component then I’d recommend &lt;a href=&quot;http://bazalt-cms.com/ng-table/&quot;&gt;ngTable&lt;/a&gt;. We actually used it for some of the work on this project. In some situation we ended up running into issues and just rolled our own. It seems that, with AngularJS, I often start using a pre-built solution and find myself in a hole with some functionality that the client requested and that wasn’t originally part of the component, ugh.&lt;/p&gt;
+
+&lt;p&gt;This is just a place for you to start from in your project. This table directive will have 2 attributes, “ng-model” which will be the rows of data and “columns” which will be how you configure columns headers and what data to display.&lt;/p&gt;
+
+&lt;h3 id=&quot;directive&quot;&gt;Directive&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;// customAngularTable.js
+mainApp.directive(&#39;customAngularTable&#39;, function () {
+    return {
+        restrict : &#39;E&#39;, //this can only be used as a tag &lt;my-custom-table /&gt;
+        replace  : true, //replace the html tag with out template
+        require  : &#39;ngModel&#39;, //this directive has to have the attr ng-modal=&quot;&quot;
+        scope    : {
+            ngModel : &#39;=&#39;, //variable name will be the same on our scope object
+            columns : &#39;=&#39;
+        },
+        templateUrl : &#39;customAngularTable.tpl.html&#39;,
+        controller : &#39;customAngularTableCtrl&#39;
+    };
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;html-template&quot;&gt;HTML Template&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;div&amp;gt;
+    &amp;lt;table&amp;gt;
+        &amp;lt;thead&amp;gt;
+            &amp;lt;tr&amp;gt;
+                &amp;lt;th ng-repeat=&amp;quot;col in columns&amp;quot; 
+                    ng-click=&amp;quot;applySort(col)&amp;quot;&amp;gt;
+                    
+                &amp;lt;/th&amp;gt;
+            &amp;lt;/tr&amp;gt;
+            &amp;lt;tr&amp;gt;
+                &amp;lt;th ng-repeat=&amp;quot;col in columns&amp;quot;&amp;gt;
+                    &amp;lt;input type=&amp;quot;text&amp;quot; 
+                           ng-model=&amp;quot;filters[col.property]&amp;quot; 
+                           ng-change=&amp;quot;applyFilters(col)&amp;quot; /&amp;gt;
+                &amp;lt;/th&amp;gt;
+            &amp;lt;/tr&amp;gt;
+        &amp;lt;/thead&amp;gt;
+        &amp;lt;tbody&amp;gt;
+            &amp;lt;tr ng-repeat=&amp;quot;row in tableRows&amp;quot;&amp;gt;
+                &amp;lt;td ng-repeat=&amp;quot;col in columns&amp;quot;&amp;gt;
+                    
+                &amp;lt;/td&amp;gt;
+            &amp;lt;/tr&amp;gt;
+        &amp;lt;/tbody&amp;gt;
+    &amp;lt;/table&amp;gt;
+    
+    &amp;lt;hr /&amp;gt;
+    &amp;lt;!-- We can just use a pre-built component to page since that 
+            is beyond the scope of this tutorial --&amp;gt;
+    &amp;lt;pagination ng-model=&amp;quot;currentPage&amp;quot; 
+                items-per-page=&amp;quot;pageSize&amp;quot; 
+                total-items=&amp;quot;rowsTotal&amp;quot; 
+                previous-text=&amp;quot;&amp;amp;lsaquo;&amp;quot; 
+                next-text=&amp;quot;&amp;amp;rsaquo;&amp;quot;&amp;gt;
+    &amp;lt;/pagination&amp;gt;
+&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;controller&quot;&gt;Controller&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;// CustomAngularTableCtrl.js
+mainApp.controller(&#39;customAngularTableCtrl&#39;, function ($scope) {
+    &#39;use strict&#39;;
+
+    /**
+     * View Variables
+     */
+    $scope.tableRows = [];
+    //- sorting
+    $scope.currentSortColumn = null;
+    $scope.currentSortOrder = &#39;&#39;;
+    //- filtering
+    $scope.filters = {};
+    // - paging
+    $scope.currentPage = 1;
+    $scope.pageSize = 10;
+    $scope.rowsTotal = 1;
+
+    /**
+     * View Methods
+     */
+    $scope.applySort = function (columnToSortOn) {
+        
+        if($scope.currentSortColumn === columnToSortOn) {
+            //user has clicked the same column, so we need to change sort order
+            //we have 3 sorting states here to step through (asc,desc,&#39;&#39;)
+            $scope.currentSortOrder = ($scope.currentSortOrder === &#39;&#39;) ? 
+                &#39;asc&#39; : ($scope.currentSortOrder === &#39;asc&#39; ? &#39;desc&#39; : &#39;&#39;);
+            
+            //if the previous operation set currentSortOder to blank, 
+            //remove currentSortColumn
+            if($scope.currentSortOrder === &#39;&#39;) {
+                $scope.currentSortColumn = null;
+            }
+        } else {
+            //user has clicked a new column
+            $scope.currentSortColumn = columnToSortOn;
+            //step to first sort state
+            $scope.currentSortOrder = &#39;asc&#39;;
+        }
+        
+        //update view
+        updateTableData();
+        
+    };
+    
+    $scope.applyFilters = function () {
+        //reset current page to 1, se we don&#39;t filter out all the rows 
+        //and display an invalid page
+        $scope.currentPage = 1;
+        
+        //since, updateTableData will apply all the filters for us, 
+        //we just need to re-call that method here.
+        updateTableData();
+    };
+
+    /**
+     * Watches 
+     */
+    //we&#39;ll need to setup a watch for ngModel so if it changes we update the view
+    $scope.$watch(&#39;ngModel&#39;, function (newValue, oldValue) {
+        //check if the value is defined and not null
+        if(angular.isDefined(newValue) &amp;amp;&amp;amp; newValue !== null) {
+            //since we have a new array, update view
+            updateTableData();
+        }
+    });
+    
+    //We need to watch currentPage so we can update the view with the current page
+    $scope.$watch(&quot;currentPage&quot;, function (newValue, oldValue) {
+        //check if the page really did change
+        if(newValue !== oldValue) {
+            updateTableData();
+        }
+    });
+
+    /**
+     * Private Methods
+     */   
+
+    function updateTableData () {
+        //we will create a new array that we will fill with 
+        //all the rows that should still bee in the view.
+        var viewArray;
+
+        //step 1: apply filtering on all the rows
+        viewArray = $scope.ngModel.filter(applyFilters);
+        
+        //step 2: if the user has clicked a column, apply sorting
+        if($scope.currentSortColumn !== null) {
+            // using a getSorter function here allows you to use custom 
+            // sorting if you want
+            viewArray = viewArray.sort(getSorter());
+        }
+        
+        //step 3: update pagination and apply
+        $scope.rowsTotal = viewArray.length;
+        // - current page is 1, based but our array is 0 based so subtract 1
+        var pageStartIndex = ($scope.currentPage-1) * $scope.pageSize;
+        // - page end index is either page size or whatever is left in the array
+        var pageEndIndex = pageStartIndex + Math.min(viewArray.length, $scope.pageSize);
+        // - splice view array to page start and end index&#39;s, and return the 
+        //   page we want to view
+        viewArray = viewArray.splice(pageStartIndex, pageEndIndex);
+        
+        //pass the ref to the viewArray to $scope and let angular refresh the html table
+        $scope.tableRows = viewArray;
+    }
+    
+    function applyFilters (row) {
+        var allowed = true;
+        
+        //since we set ng-model on each input in the 2nd header row to filters[col.property] 
+        //in the view, angular will auto-create a matching property key on the filters object 
+        //and set it to whatever the user types into that input.
+        
+        //So, here we can loop through each property on the $scope.filters property and check
+        //if the row should still be displayed.
+        Object.keys($scope.filters).forEach(function (key) {
+            var rowValue = row[key],
+                filterValue = (angular.isDefined($scope.filters[key]) 
+                                 ? $scope.filters[key] : &quot;&quot;);
+            
+            //if this value is still allowed by other columns, 
+            //test it with this filter value
+            if(allowed &amp;amp;&amp;amp; filterValue !== null) {
+                //here is a good place to add custom filters based on this column. 
+                //Ex. var column = lookupColumnFormKey(key);
+                //    if(column.type === &#39;number&#39;)  
+                //        allowed = numberFilter(rowValue, filterValue); 
+    
+                allowed = stringSearchFilter(rowValue, filterValue);
+            }
+        });
+        return allowed;
+    }
+    
+    function getSorter () {
+        //Here you can return different sort functions based on $scope.currentSortColumn
+        //Ex. if($scope.currentSortColumn.type === &#39;number) 
+        //         return numberSorter($scope.currentSortColumn, $scope.currentSortOrder);
+
+        return stringSorter($scope.currentSortColumn, $scope.currentSortOrder);
+    }
+    
+    /**
+     * Checks if value contains the chars that are in filterValue.
+     */
+    function stringSearchFilter (value, filterValue) {
+        value = value.toString().toLowerCase(); //toString in case it&#39;s a number
+        filterValue.toString().trim().toLowerCase();
+        return (value.indexOf(filterValue) !== -1);
+    }
+    
+    /**
+     * Compares 2 rows as strings based on sortColumn.property.
+     */
+    function stringSorter (sortColumn, sortOrder) {
+        return function (rowA, rowB) {
+            var valueA = rowA[sortColumn.property],
+                valueB = rowB[sortColumn.property],
+                result = valueA.localeCompare(valueB);
+            if(sortOrder === &#39;desc&#39;) {
+                result *= -1;
+            }
+            return result;
+        };
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I tried to add as many comments as I could so you can see whats going on here. Next would be how to implement this directive. You’ll need to setup the columns array based on the data you want to display in the table.&lt;/p&gt;
+
+&lt;h3 id=&quot;config-example&quot;&gt;Config Example&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;mainApp.controller(&#39;AngularTableTestCtrl&#39;, function($scope) {
+    $scope.rows = [
+        { first : &#39;Sue&#39;, last : &#39;Davis&#39;, title : &#39;Web Developer&#39;, company : &#39;Infusion&#39; },
+        { first : &#39;David&#39;, last : &#39;Marks&#39;, title : &#39;Sales Rep&#39;, company : &#39;Walmart&#39; },
+        { first : &#39;Jake&#39;, last : &#39;Richards&#39;, title : &#39;Customer Service&#39;, company : &#39;Target&#39; }
+    ];
+    $scope.columns = [
+        { label : &#39;First Name&#39;, property : &#39;first&#39; },
+        { label : &#39;Last Name&#39;, property : &#39;last&#39; },
+        { label : &#39;Occupation&#39;, property : &#39;title&#39; },
+        { label : &#39;Company&#39;, property : &#39;company&#39; }
+    ];
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;implementation&quot;&gt;Implementation&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;custom-angular-table columns=&amp;quot;columns&amp;quot; ng-model=&amp;quot;rows&amp;quot;&amp;gt;&amp;lt;/custom-angular-table&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will setup a very basic angular data table directive with filtering, sorting and paging that you can add to as needed. For paging I used &lt;a href=&quot;http://angular-ui.github.io/bootstrap/#/pagination&quot;&gt;Angular UI Bootstrap&lt;/a&gt; which works really nice. In the app I’m working on we added custom filters, sorters and input fields into the table body with validation. Basicly, Excel in the browser :). You are free to use these files as you like and they can be found on my GitHub repo &lt;a href=&quot;https://github.com/jasonsavage/simple-angular-table&quot;&gt;github.com/jasonsavage/simple-angular-table&lt;/a&gt;.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 14 Jul 2014 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/angularjs-custom-data-table-example.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/angularjs-custom-data-table-example.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Moving to Raleigh to work for Infusion</title>
+        <description>&lt;p&gt;The time has come for me to pack my bags and move south. I’ve been in Pittsburgh, PA since I graduated from &lt;a href=&quot;http://www.edinboro.edu/&quot;&gt;Edinboro University&lt;/a&gt; in 2003, and even a few years before college. Living and working in the burgh, I’ve gained a lot of experience and had the pleasure working with many really talented people. But, alas, the weather has finally gotten to my wife and me. Plus, my son is starting 2nd grade in the fall! and I fear that if we don’t move soon, we’ll never leave.&lt;/p&gt;
+
+&lt;p&gt;I was offered an Interactive Developer role with a big New York company called &lt;a href=&quot;http://www.infusion.com/&quot;&gt;Infusion&lt;/a&gt;. Infusion is opening an office in Raleigh, NC and I’ll be part of the many new hires for that team.&lt;/p&gt;
+
+&lt;p&gt;It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?&lt;/p&gt;
+</description>
+        <pubDate>Wed, 04 Jun 2014 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>YouTube Browser-based Uploading with OAuth</title>
+        <description>&lt;p&gt;YouTube has changed over to OAuth for using their data API (API 3.0)&lt;br /&gt;
+&lt;a href=&quot;https://developers.google.com/youtube/v3/&quot;&gt;https://developers.google.com/youtube/v3/&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+Which is fine but it seems they haven’t move all of their code over to the new API or haven’t finished the docs for it yet, so this is sort of a missing manual for implementing the old API 2.0 Browser-based Uploading seen here:&lt;br /&gt;
+&lt;a href=&quot;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&quot;&gt;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&lt;/a&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h3&gt;Step 1&lt;i&gt;- register your app with Google&lt;/i&gt;&lt;/h3&gt;
+&lt;p&gt;If you are creating this for one of your brands you need to login/create a Google account for them. After you logged in, you’ll need to register your application by following the instructions found here:&lt;br /&gt;
+&lt;a href=&quot;https://developers.google.com/youtube/registering_an_application&quot;&gt;https://developers.google.com/youtube/registering_an_application&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;i&gt;- when you create a client ID, set application type to web application&lt;/i&gt;&lt;br /&gt;
+&lt;i&gt;- redirect url can be this: http://localhost/oauth2callback, you only need it once&lt;/i&gt;&lt;br /&gt;
+&lt;br /&gt;
+You will also need to get a developer key from here: &lt;br /&gt;
+https://code.google.com/apis/youtube/dashboard/&lt;br /&gt;
+&lt;br /&gt;
+&lt;i&gt;The developer_key will not change so make sure you add this to your config file.&lt;/i&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;h3&gt;
+Step 2 &lt;i&gt;- get a refresh_token&lt;/i&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://developers.google.com/youtube/v3/guides/authentication&quot;&gt;https://developers.google.com/youtube/v3/guides/authentication&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+Now that you have your application registered, you should have an oAuth Client ID and Client Secret. Go ahead and save them into your project as a config variable since they don’t change, but you need them to get an &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt;. You now need to get an authorization code from the API. This is a one time use token that can be exchanged for an &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt; and &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt;. They call it a &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt; in the docs, but it’s really a long term token that doesn’t expire, which is what we want.&lt;br /&gt;
+&lt;br /&gt;
+The code url will be this:&lt;br /&gt;&lt;/p&gt;
+&lt;pre class=&quot;brush: php&quot;&gt;$url = &#39;https://accounts.google.com/o/oauth2/auth?&#39;;  
+$url .= &#39;client_id=&#39;   .   
+$url .= &#39;&amp;amp;redirect_uri=&#39; . urlencode(&#39;http://localhost/oauth2callback&#39;); //this is whatever url you set in the &quot;create client id dialog&quot;  
+$url .= &#39;&amp;amp;scope=&#39;    . urlencode(&#39;https://gdata.youtube.com&#39;);  
+$url .= &#39;&amp;amp;response_type=code&#39;;  
+$url .= &#39;&amp;amp;access_type=offline&#39;;  
+$url .= &#39;&amp;amp;approval_prompt=force&#39;;  
+
+&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+After you call this url you will be taken to a page and asked if your application is allowed to access this Google account. Click accept and you will be redirected to the url you specified earlier with the get variable &lt;span style=&quot;color: #0303FF;&quot;&gt;&lt;b&gt;code=…&lt;/b&gt;&lt;/span&gt; added to the end of the url. This is your one time use token so save it into your text editor while you create the next request. &lt;br /&gt;
+&lt;br /&gt;
+To make a request to get the &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt;, which is another one time thing, you can use PHP cURL code below or the command line.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;pre class=&quot;brush: php&quot;&gt; //using PHP cUrl  
+ $curl = curl_init( &#39;https://accounts.google.com/o/oauth2/token&#39; );  
+ $post_fields = array(  
+   &#39;code&#39;     =&amp;gt; &#39;&#39;,  
+   &#39;client_id&#39;   =&amp;gt; &#39;&#39;,  
+   &#39;client_secret&#39; =&amp;gt; &#39;&#39;,  
+   &#39;redirect_uri&#39; =&amp;gt; &#39;http://localhost/oauth2callback&#39;, //this doesn&#39;t do anything, but it&#39;s validated so i needs to match what you&#39;ve been using  
+   &#39;grant_type&#39;  =&amp;gt; &#39;authorization_code&#39;  
+ );  
+
+ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);  
+ curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);  
+ curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
+ curl_setopt($curl, CURLOPT_POST, 1);  
+ curl_setopt($curl, CURLOPT_HEADER, 0);  
+ curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post_fields));
+  
+ curl_setopt($curl, CURLOPT_HTTPHEADER, array(  
+   &#39;Content-Type: application/x-www-form-urlencoded&#39;  
+ )); 
+ 
+ //send request  
+ $response = curl_exec($curl); 
+ 
+ print_r($response);  
+
+&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+If everything worked, you should get something like this back:&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;pre class=&quot;brush: js&quot;&gt;{  
+  &quot;access_token&quot; : &quot;ya29.AHES6ZTtm7SuokEB-RGtbBty9IIlNiP9-eNMMQKtXdMP3sfjL1Fc&quot;,  
+  &quot;token_type&quot; : &quot;Bearer&quot;,  
+  &quot;expires_in&quot; : 3600,  
+  &quot;refresh_token&quot; : &quot;1/HKSmLFXzqP0leUihZp2xUt3-5wkU7Gmu2Os_eBnzw74&quot;  
+ }  
+&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+Bingo!, copy and pasted the &lt;span style=&quot;color: #0303FF;&quot;&gt;refresh_token&lt;/span&gt; into your config file. Like I said before, it doesn’t expire like the access_token will. You will use it to get a new &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt; each time your form loads. Using a token to get a token seems strange but it’s Google so I guess they know what they’re doing.&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;h3&gt;
+Step 3 - &lt;i&gt;post url and upload token&lt;/i&gt;&lt;/h3&gt;
+&lt;p&gt;We are back to this guide:&lt;br /&gt;
+&lt;a href=&quot;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&quot;&gt;https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+You need to create a video object on the YouTube server to upload a video to. To do this, you’ll need to get an &lt;span style=&quot;color: #0303FF;&quot;&gt;upload_token&lt;/span&gt; and a &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; from the YouTube API.&lt;br /&gt;
+&lt;a href=&quot;http://gdata.youtube.com/action/GetUploadToken&quot;&gt;http://gdata.youtube.com/action/GetUploadToken&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+To create a video object, a video title and description along with some keywords and a category are required before can you get the &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; so, in my case, I just created temporary ones and updated them later.&lt;br /&gt;
+&lt;br /&gt;
+The category definitions can be found here:&lt;br /&gt;
+&lt;a href=&quot;http://gdata.youtube.com/schemas/2007/categories.cat&quot;&gt;http://gdata.youtube.com/schemas/2007/categories.cat&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;pre class=&quot;brush: php&quot;&gt;public function get_video_upload_info()  
+{  
+   //get youtube access token  
+   $access_token = $this-&amp;gt;get_access_token();  
+
+   //create a video obj with temp info  
+   $video_title  = &#39;Video Temp Title &#39; . rand(1, 9999);  
+   $video_desc   = &#39;Temp Desc&#39;;  
+   $video_keywords = &#39;facebook, contest&#39;;  
+
+   //setup request body as xml  
+   $xml_str = implode(&#39;&#39;, array(  
+     &#39;&amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;&#39;,  
+     &#39;&amp;lt;entry xmlns=&quot;http://www.w3.org/2005/Atom&quot; xmlns:media=&quot;http://search.yahoo.com/mrss/&quot; xmlns:yt=&quot;http://gdata.youtube.com/schemas/2007&quot;&amp;gt;&#39;,  
+       &#39;&amp;lt;media:group&amp;gt;&#39;,  
+         &#39;&amp;lt;media:title type=&quot;plain&quot;&amp;gt;&#39; . $video_title . &#39;&amp;lt;/media:title&amp;gt;&#39;,  
+         &#39;&amp;lt;media:description type=&quot;plain&quot;&amp;gt;&#39; . $video_desc . &#39;&amp;lt;/media:description&amp;gt;&#39;,  
+         &#39;&amp;lt;media:category scheme=&quot;http://gdata.youtube.com/schemas/2007/categories.cat&quot;&amp;gt;Animals&amp;lt;/media:category&amp;gt;&#39;,  
+         &#39;&amp;lt;media:keywords&amp;gt;&#39; . $video_keywords . &#39;&amp;lt;/media:keywords&amp;gt;&#39;,  
+         //&#39;&amp;lt;yt:private/&amp;gt;&#39;,  
+         &#39;&amp;lt;yt:accessControl action=&quot;list&quot; permission=&quot;denied&quot;/&amp;gt;&#39;, //causes the video to be unlisted  
+       &#39;&amp;lt;/media:group&amp;gt;&#39;,  
+     &#39;&amp;lt;/entry&amp;gt;&#39;));
+  
+   //use curl to call youtube api  
+   $ch = curl_init( &#39;http://gdata.youtube.com/action/GetUploadToken&#39; );  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
+   curl_setopt($ch, CURLOPT_HEADER, 0);
+  
+   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
+     &#39;Authorization: Bearer &#39; . $access_token,  
+     &#39;GData-Version: 2&#39;,  
+     &#39;X-GData-Key: key=&#39; . ],  
+     &#39;Content-Type: application/atom+xml; charset=UTF-8&#39;  
+   ));
+  
+   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_str);  
+
+   //send request  
+   $xml_response = curl_exec($ch);  
+
+   //close connection  
+   curl_close($ch); 
+  
+   $result = simplexml_load_string( $xml_response );  
+   if( $result-&amp;gt;getName() === &#39;errors&#39; )  
+   {  
+     return array(&#39;post_url&#39; =&amp;gt; &#39;broke&#39;, &#39;upload_token&#39; =&amp;gt; &#39;not_a_real_token&#39;);     
+   }  
+   return array(&#39;post_url&#39; =&amp;gt; (string) $result-&amp;gt;url, &#39;upload_token&#39; =&amp;gt; (string) $result-&amp;gt;token);  
+ }  
+
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;br /&gt;
+In the code above, the method ‘&#39;’get_access_token();’’’ uses the &lt;span style=&quot;color: #0303FF;&quot;&gt;refreash_token&lt;/span&gt; to make a cURL request to the YouTube API to get a valid &lt;span style=&quot;color: #0303FF;&quot;&gt;access_token&lt;/span&gt;. &lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;pre class=&quot;brush: php&quot;&gt;private function get_access_token()  
+ {  
+   $ch = curl_init( &#39;https://accounts.google.com/o/oauth2/token&#39; );  
+   $post_fields = array(  
+     &#39;client_id&#39;   =&amp;gt; ,  
+     &#39;client_secret&#39; =&amp;gt; ,  
+     &#39;refresh_token&#39; =&amp;gt; ,  
+     &#39;grant_type&#39;  =&amp;gt; &#39;refresh_token&#39;  
+   );  
+
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
+   curl_setopt($ch, CURLOPT_POST, 1);  
+   curl_setopt($ch, CURLOPT_HEADER, 0);  
+   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields)); 
+ 
+   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
+     &#39;Content-Type: application/x-www-form-urlencoded&#39;  
+   ));  
+
+   //send request  
+   $response = json_decode( curl_exec($ch) );  
+
+   curl_close($ch);  
+
+   return $response-&amp;gt;access_token;  
+ }  
+
+&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;h3&gt;
+Step 4 - &lt;i&gt;upload the video to YouTube&lt;/i&gt;&lt;/h3&gt;
+&lt;p&gt;Using the &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; we can now display the form to complete this whole process. The &lt;span style=&quot;color: #0303FF;&quot;&gt;post_url&lt;/span&gt; you will use in your form will need to have the GET variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;next=…&lt;/span&gt;&lt;/b&gt; added to it. This will be the url that the form will redirect to after the video has finished uploading.&lt;br /&gt;
+&lt;br /&gt;
+The form needs to have the 2 fields ‘token’ and ‘file’, which the API is expecting:&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;pre class=&quot;brush: plain&quot;&gt;&amp;lt;form method=&quot;post&quot; action=&quot;?next=&quot; enctype=&quot;multipart/form-data&quot;&amp;gt;  
+   &amp;lt;input name=&quot;token&quot; type=&quot;hidden&quot; value=&quot;&quot;/&amp;gt;   
+   &amp;lt;input type=&#39;file&#39; id=&#39;file&#39; name=&#39;file&#39; accept=&quot;video/*&quot; /&amp;gt;  
+ &amp;lt;/form&amp;gt;   
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;br /&gt;
+When video is finished uploading, the form will redirect to the url you set for &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;next=…&lt;/span&gt;&lt;/b&gt; along with some extra GET variables from YouTube. The variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;status=…&lt;/span&gt;&lt;/b&gt; is always returned, so you can use that to check if it was successful, which the value would be 200. &lt;br /&gt;
+&lt;br /&gt;
+If the upload was a success, you will also get the variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;id=…&lt;/span&gt;&lt;/b&gt; which will have the video’s new id ( http://www.youtube.com/watch?v= ). &lt;br /&gt;
+&lt;br /&gt;
+If the status wasn’t 200, then an error occured and you will get the variable &lt;b&gt;&lt;span style=&quot;color: #0303FF;&quot;&gt;code=… &lt;/span&gt;&lt;/b&gt;which will describe the error.&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;br /&gt;
+That should be it. Easy huh? after 3 days I finally got this working so I figured it needed documenting and like i said, it’s probably going to change soon so who knows how long this will work.&lt;br /&gt;
+&lt;br /&gt;
+Google also has some code libraries you can use:&lt;br /&gt;
+&lt;a href=&quot;https://developers.google.com/youtube/v3/code_samples/php&quot;&gt;https://developers.google.com/youtube/v3/code_samples/php&lt;/a&gt;&lt;br /&gt;
+&lt;br /&gt;
+I looked into them, but was having trouble fitting the code into my project, so maybe if I started with all this in mind, I would’ve been able to use them.&lt;/p&gt;
+</description>
+        <pubDate>Mon, 30 Sep 2013 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/youtube-browser-based-uploading-with-oauth.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/youtube-browser-based-uploading-with-oauth.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>The Selected() jQuery Plugin</title>
+        <description>&lt;p&gt;I find myself writing a lot of radio button/toggle button functionality. The core ability is to be able to set and unset an html element as selected (or checked, active, clicked, etc.). This functionality can be wrapped up nicely in a jQuery plugin I created called “selected()”.&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;$(&quot;a&quot;).selected(true);
+var isSelected = $(&quot;a&quot;).selected();&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+Of course this led to being able to have a group of buttons with only one selected at a time:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-javascript&quot;&gt;$(&quot;a.tab&quot;).selectedGroup();&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;br /&gt;
+I have the plugin up on GitHub with a little more explanation and a demo:
+&lt;a href=&quot;https://github.com/jasonsavage2/jquery.selected&quot;&gt;github.com/jasonsavage2/jquery.selected&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Mon, 10 Jun 2013 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/the-selected-jquery-plugin.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/the-selected-jquery-plugin.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Day 1</title>
+        <description>&lt;p&gt;So I started this blog because it seems like everyone who is in the web development biz has some kind of blog to show what they figure out from day to day while building websites. We’ll see how it goes, I’m not that great of a writer…&lt;/p&gt;
+</description>
+        <pubDate>Wed, 05 Jun 2013 00:00:00 -0400</pubDate>
+        <link>http://locahost:4000/blog/day1.html</link>
+        <guid isPermaLink="true">http://locahost:4000/blog/day1.html</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

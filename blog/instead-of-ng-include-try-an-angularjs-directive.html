@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>Instead of ng-include, try an AngularJS directive</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/instead-of-ng-include-try-an-angularjs-directive.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon angular"></span>
+    <h2 class="post-title">Instead of ng-include, try an AngularJS directive</h2>
+    <p class="post-meta">Mar 5, 2015</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>Recently, I came across a lot of code in an <a href="https://angularjs.org/">AngularJS</a> project I’m working on that uses ng-include. Up to now, haven’t really used ng-include in Angular very much. Instead, whenever I need to reuse a chunk of HTML, I just use create a custom AngularJS directive. Looking back at how I’ve been using directives, a ng-include might have been a better choice in some places.</p>
+
+<p>With that being said, I still think that in most situations, you are better off splitting up functionality into directives. Many of the places in the current Angular project I’m working on where ng-include is being used, a directive would have been a much better choice. So how to know when to use one or the other? One big red flag is if you are thinking of using the ng-init, ng-controller attributes. These have their uses, but, I believe should be avoided when building your application.</p>
+
+<h3 id="ng-include-example">ng-include example</h3>
+
+<pre><code class="language-html">&lt;!-- app/views/properties.html --&gt;
+&lt;div class=&quot;properties&quot; ng-controller=&quot;propertiesCtrl&quot;&gt;
+    &lt;form class=&quot;form-horizontal&quot;&gt;
+        &lt;div class=&quot;form-group&quot; 
+             ng-repeat=&quot;key in currentElement.props&quot; 
+             ng-include=&quot;&#39;app/views/properties/main.html&#39;&quot;&gt;&lt;/div&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+</code></pre>
+
+<pre><code class="language-html">&lt;!-- app/views/properties/main.html --&gt;
+&lt;label class=&quot;col-md-3 control-label&quot;&gt;
+    &#123;&#123;key | capitalize&#125;&#125; :
+&lt;/label&gt;
+&lt;div class=&quot;col-md-7&quot;
+     ng-include=&quot;&#39;composer/flowDesigner/views/properties/controls/DEFAULT.html&#39;&quot;&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>The code above is basically the reason why directives were created in Angular. A directive allows you to create a chuck on code that can be expressed as a tag, a pseudo web component if you will. Directives also allows us to isolate functionality and reduce the amount of code that is in a “page” controller.</p>
+
+<h3 id="directive-example">directive example</h3>
+
+<pre><code class="language-javascript">angular("mainApp")
+    // We define the name of the directive with a prefix. The prefix helps to 
+    // distinguish our custom html directive tags from actual html tags
+    // example : &lt;com-header&gt; vs &lt;header&gt;
+    //
+    // NOTE: Angular converts camel case to dash case when rendering directives. 
+    //       So in our html page, we will use &lt;com-properties&gt; instead of &lt;comProperies&gt;
+    .directive("comProperies", function () {
+        "use strict";
+
+        return {
+            // restrict how this directive can be used, E means as an html tag only
+            restrict: "E",
+ 
+            // replace the tag on the page with the template of this directive
+            replace: true, 
+
+            // path to our html template
+            templateUrl: "app/views/comProperies.tpl.html",
+
+            // html to JS linking function
+            link: properiesLink,
+
+            // this directive's controller function
+            // NOTE: Start with a capital letter since angular uses controller like 
+            //       pseudo classes
+            controller: ProperiesCtrl
+        };
+  
+        function properiesLink($scope, $element, $attrs) {
+            // The linking function allows us to add any html manipulation we might need.
+            // Basically, if you are using jQuery "$" selector function for anything, 
+            // add it here.
+            //
+            // NOTE: Try to avoid using a linking function. Angular has a lot of directives 
+            //       you can add to your template file so you don't need one. 
+            //       If you are doing anything with the $attrs object, use $attrs.$observe. 
+            //       This will trigger a function if the value of an attribute ever changes.
+            //       $element is a jQuery reference to your template's root html element.
+        }
+  
+        function ProperiesCtrl($scope) {
+            // A basic controller function for this directive. One thing to remember is that 
+            // all instances of this directive use the same controller. So, for example, 
+            // "this.currentIndex = 0;" would be a global variable among all 
+            // &lt;com-properties&gt; elements.
+        }
+    });
+</code></pre>
+
+<p>Not too much has changed in this example except for code structure. The real advantage can be seen as you start to expand functionality of this directive. For example, this directive looks like it creates a form and lists out the properties in currentElement.props so that they can be edited. Now we want to list out the properties of currentPlan.details. By re-using the “ng-model” attribute that is provided by angular. We can update the custom directive html element so it can be written as:</p>
+
+<pre><code class="language-html">&lt;com-properties ng-model=”currentPlan.details”&gt;&lt;/com-properties&gt;</code></pre>
+
+<p>To make this update, first inside our template, find and change <strong>ng-repeat=”key in mainTabKeys”</strong> to <strong>ng-repeat=”key in ngModel”</strong>. Next, add <strong>scope : {ngModel : “=” }</strong> to the return object in the directive so now our directive looks like this:</p>
+
+<pre><code class="language-javascript">angular("mainApp")
+    .directive("comProperies", function () {
+        "use strict";
+
+        return {
+            restrict: "E",
+            replace: true, 
+            templateUrl: "app/views/comProperies.tpl.html",
+            link: properiesLink,
+            controller: ProperiesCtrl,
+            scope : { 
+                ngModel : "=" 
+            }
+        };
+        
+        // ...
+    });
+</code></pre>
+
+<p>With this change, this directive will now list out all the properties of whatever object the attribute <strong>ng-model</strong> is set to. I encourage you to read more about directive by following the links below, since this article is a very limited overview of how directives are used in AngularJS.</p>
+
+<ul>
+  <li><a href="https://code.angularjs.org/1.3.14/docs/guide/directive">code.angularjs.org/1.3.14/docs/guide/directive</a></li>
+  <li><a href="https://code.angularjs.org/1.3.14/docs/api/ng/service/$compile">code.angularjs.org/1.3.14/docs/api/ng/service/$compile</a></li>
+</ul>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/stop-trying-to-add-class-structure-to-javascript.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/html5-canvas-drawing-and-animation-101.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>

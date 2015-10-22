@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+  <!--
+	Twenty by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<head>
+    <title>YouTube Browser-based Uploading with OAuth</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="My everyday struggles with the web">
+    <meta name="keywords" content="" />
+    <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery.dropotron.min.js"></script>
+    <script src="/assets/js/jquery.scrolly.min.js"></script>
+    <script src="/assets/js/jquery.scrollgress.min.js"></script>
+    <script src="/assets/js/skel.min.js"></script>
+    <script src="/assets/js/skel-layers.min.js"></script>
+    <script src="/assets/js/prism.js"></script>
+    <script src="/assets/js/init.js"></script>
+
+    <link rel="stylesheet" href="/assets/css/skel.css" />
+    <link rel="stylesheet" href="/assets/css/prism.css" />
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/css/style-wide.css" />
+    <link rel="stylesheet" href="/assets/css/style-noscript.css" />
+
+    <!--[if lte IE 8]><link rel="stylesheet" href="/assets/css/ie/v8.css" /><![endif]-->
+    <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="canonical" href="http://locahost:4000/blog/youtube-browser-based-uploading-with-oauth.html">
+</head>
+
+
+  <body class="no-sidebar">
+    <div class="bgimg"></div>
+
+    <header id="header">
+	<h1 id="logo"><a href="/">blog.jason_writes_code</a></h1>
+	<nav id="nav">
+		<ul>
+			<li><a href="/">Home</a></li>
+            <!-- <li><a href="/contact.html">Contact</a></li> -->
+		</ul>
+	</nav>
+</header>
+
+    <div class="page-content">
+        <article id="main">
+  <header class="special container">
+    <span class="icon php"></span>
+    <h2 class="post-title">YouTube Browser-based Uploading with OAuth</h2>
+    <p class="post-meta">Sep 30, 2013</p>
+  </header>
+
+  <section class="style4 wrapper container">
+    <p>YouTube has changed over to OAuth for using their data API (API 3.0)<br />
+<a href="https://developers.google.com/youtube/v3/">https://developers.google.com/youtube/v3/</a><br />
+<br />
+Which is fine but it seems they haven’t move all of their code over to the new API or haven’t finished the docs for it yet, so this is sort of a missing manual for implementing the old API 2.0 Browser-based Uploading seen here:<br />
+<a href="https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading">https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading</a><br /></p>
+<h3>Step 1<i>- register your app with Google</i></h3>
+<p>If you are creating this for one of your brands you need to login/create a Google account for them. After you logged in, you’ll need to register your application by following the instructions found here:<br />
+<a href="https://developers.google.com/youtube/registering_an_application">https://developers.google.com/youtube/registering_an_application</a><br />
+<br />
+<i>- when you create a client ID, set application type to web application</i><br />
+<i>- redirect url can be this: http://localhost/oauth2callback, you only need it once</i><br />
+<br />
+You will also need to get a developer key from here: <br />
+https://code.google.com/apis/youtube/dashboard/<br />
+<br />
+<i>The developer_key will not change so make sure you add this to your config file.</i><br /></p>
+<h3>
+Step 2 <i>- get a refresh_token</i></h3>
+<p><a href="https://developers.google.com/youtube/v3/guides/authentication">https://developers.google.com/youtube/v3/guides/authentication</a><br />
+<br />
+Now that you have your application registered, you should have an oAuth Client ID and Client Secret. Go ahead and save them into your project as a config variable since they don’t change, but you need them to get an <span style="color: #0303FF;">access_token</span>. You now need to get an authorization code from the API. This is a one time use token that can be exchanged for an <span style="color: #0303FF;">access_token</span> and <span style="color: #0303FF;">refresh_token</span>. They call it a <span style="color: #0303FF;">refresh_token</span> in the docs, but it’s really a long term token that doesn’t expire, which is what we want.<br />
+<br />
+The code url will be this:<br /></p>
+<pre class="brush: php">$url = 'https://accounts.google.com/o/oauth2/auth?';  
+$url .= 'client_id='   .   
+$url .= '&amp;redirect_uri=' . urlencode('http://localhost/oauth2callback'); //this is whatever url you set in the "create client id dialog"  
+$url .= '&amp;scope='    . urlencode('https://gdata.youtube.com');  
+$url .= '&amp;response_type=code';  
+$url .= '&amp;access_type=offline';  
+$url .= '&amp;approval_prompt=force';  
+
+</pre>
+<p><br />
+After you call this url you will be taken to a page and asked if your application is allowed to access this Google account. Click accept and you will be redirected to the url you specified earlier with the get variable <span style="color: #0303FF;"><b>code=…</b></span> added to the end of the url. This is your one time use token so save it into your text editor while you create the next request. <br />
+<br />
+To make a request to get the <span style="color: #0303FF;">refresh_token</span>, which is another one time thing, you can use PHP cURL code below or the command line.<br />
+<br /></p>
+
+<pre class="brush: php"> //using PHP cUrl  
+ $curl = curl_init( 'https://accounts.google.com/o/oauth2/token' );  
+ $post_fields = array(  
+   'code'     =&gt; '',  
+   'client_id'   =&gt; '',  
+   'client_secret' =&gt; '',  
+   'redirect_uri' =&gt; 'http://localhost/oauth2callback', //this doesn't do anything, but it's validated so i needs to match what you've been using  
+   'grant_type'  =&gt; 'authorization_code'  
+ );  
+
+ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);  
+ curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);  
+ curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);  
+ curl_setopt($curl, CURLOPT_POST, 1);  
+ curl_setopt($curl, CURLOPT_HEADER, 0);  
+ curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post_fields));
+  
+ curl_setopt($curl, CURLOPT_HTTPHEADER, array(  
+   'Content-Type: application/x-www-form-urlencoded'  
+ )); 
+ 
+ //send request  
+ $response = curl_exec($curl); 
+ 
+ print_r($response);  
+
+</pre>
+<p><br />
+If everything worked, you should get something like this back:<br />
+<br /></p>
+<pre class="brush: js">{  
+  "access_token" : "ya29.AHES6ZTtm7SuokEB-RGtbBty9IIlNiP9-eNMMQKtXdMP3sfjL1Fc",  
+  "token_type" : "Bearer",  
+  "expires_in" : 3600,  
+  "refresh_token" : "1/HKSmLFXzqP0leUihZp2xUt3-5wkU7Gmu2Os_eBnzw74"  
+ }  
+</pre>
+<p><br />
+Bingo!, copy and pasted the <span style="color: #0303FF;">refresh_token</span> into your config file. Like I said before, it doesn’t expire like the access_token will. You will use it to get a new <span style="color: #0303FF;">access_token</span> each time your form loads. Using a token to get a token seems strange but it’s Google so I guess they know what they’re doing.<br />
+<br />
+<br /></p>
+<h3>
+Step 3 - <i>post url and upload token</i></h3>
+<p>We are back to this guide:<br />
+<a href="https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading">https://developers.google.com/youtube/2.0/developers_guide_protocol_browser_based_uploading</a><br />
+<br />
+You need to create a video object on the YouTube server to upload a video to. To do this, you’ll need to get an <span style="color: #0303FF;">upload_token</span> and a <span style="color: #0303FF;">post_url</span> from the YouTube API.<br />
+<a href="http://gdata.youtube.com/action/GetUploadToken">http://gdata.youtube.com/action/GetUploadToken</a><br />
+<br />
+To create a video object, a video title and description along with some keywords and a category are required before can you get the <span style="color: #0303FF;">post_url</span> so, in my case, I just created temporary ones and updated them later.<br />
+<br />
+The category definitions can be found here:<br />
+<a href="http://gdata.youtube.com/schemas/2007/categories.cat">http://gdata.youtube.com/schemas/2007/categories.cat</a><br />
+<br /></p>
+
+<pre class="brush: php">public function get_video_upload_info()  
+{  
+   //get youtube access token  
+   $access_token = $this-&gt;get_access_token();  
+
+   //create a video obj with temp info  
+   $video_title  = 'Video Temp Title ' . rand(1, 9999);  
+   $video_desc   = 'Temp Desc';  
+   $video_keywords = 'facebook, contest';  
+
+   //setup request body as xml  
+   $xml_str = implode('', array(  
+     '&lt;?xml version="1.0"?&gt;',  
+     '&lt;entry xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://gdata.youtube.com/schemas/2007"&gt;',  
+       '&lt;media:group&gt;',  
+         '&lt;media:title type="plain"&gt;' . $video_title . '&lt;/media:title&gt;',  
+         '&lt;media:description type="plain"&gt;' . $video_desc . '&lt;/media:description&gt;',  
+         '&lt;media:category scheme="http://gdata.youtube.com/schemas/2007/categories.cat"&gt;Animals&lt;/media:category&gt;',  
+         '&lt;media:keywords&gt;' . $video_keywords . '&lt;/media:keywords&gt;',  
+         //'&lt;yt:private/&gt;',  
+         '&lt;yt:accessControl action="list" permission="denied"/&gt;', //causes the video to be unlisted  
+       '&lt;/media:group&gt;',  
+     '&lt;/entry&gt;'));
+  
+   //use curl to call youtube api  
+   $ch = curl_init( 'http://gdata.youtube.com/action/GetUploadToken' );  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
+   curl_setopt($ch, CURLOPT_HEADER, 0);
+  
+   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
+     'Authorization: Bearer ' . $access_token,  
+     'GData-Version: 2',  
+     'X-GData-Key: key=' . ],  
+     'Content-Type: application/atom+xml; charset=UTF-8'  
+   ));
+  
+   curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_str);  
+
+   //send request  
+   $xml_response = curl_exec($ch);  
+
+   //close connection  
+   curl_close($ch); 
+  
+   $result = simplexml_load_string( $xml_response );  
+   if( $result-&gt;getName() === 'errors' )  
+   {  
+     return array('post_url' =&gt; 'broke', 'upload_token' =&gt; 'not_a_real_token');     
+   }  
+   return array('post_url' =&gt; (string) $result-&gt;url, 'upload_token' =&gt; (string) $result-&gt;token);  
+ }  
+
+</pre>
+
+<p><br />
+In the code above, the method ‘'’get_access_token();’’’ uses the <span style="color: #0303FF;">refreash_token</span> to make a cURL request to the YouTube API to get a valid <span style="color: #0303FF;">access_token</span>. <br />
+<br /></p>
+
+<pre class="brush: php">private function get_access_token()  
+ {  
+   $ch = curl_init( 'https://accounts.google.com/o/oauth2/token' );  
+   $post_fields = array(  
+     'client_id'   =&gt; ,  
+     'client_secret' =&gt; ,  
+     'refresh_token' =&gt; ,  
+     'grant_type'  =&gt; 'refresh_token'  
+   );  
+
+   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);  
+   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);  
+   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);  
+   curl_setopt($ch, CURLOPT_POST, 1);  
+   curl_setopt($ch, CURLOPT_HEADER, 0);  
+   curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields)); 
+ 
+   curl_setopt($ch, CURLOPT_HTTPHEADER, array(  
+     'Content-Type: application/x-www-form-urlencoded'  
+   ));  
+
+   //send request  
+   $response = json_decode( curl_exec($ch) );  
+
+   curl_close($ch);  
+
+   return $response-&gt;access_token;  
+ }  
+
+</pre>
+<p><br />
+<br /></p>
+<h3>
+Step 4 - <i>upload the video to YouTube</i></h3>
+<p>Using the <span style="color: #0303FF;">post_url</span> we can now display the form to complete this whole process. The <span style="color: #0303FF;">post_url</span> you will use in your form will need to have the GET variable <b><span style="color: #0303FF;">next=…</span></b> added to it. This will be the url that the form will redirect to after the video has finished uploading.<br />
+<br />
+The form needs to have the 2 fields ‘token’ and ‘file’, which the API is expecting:<br />
+<br /></p>
+
+<pre class="brush: plain">&lt;form method="post" action="?next=" enctype="multipart/form-data"&gt;  
+   &lt;input name="token" type="hidden" value=""/&gt;   
+   &lt;input type='file' id='file' name='file' accept="video/*" /&gt;  
+ &lt;/form&gt;   
+</pre>
+
+<p><br />
+When video is finished uploading, the form will redirect to the url you set for <b><span style="color: #0303FF;">next=…</span></b> along with some extra GET variables from YouTube. The variable <b><span style="color: #0303FF;">status=…</span></b> is always returned, so you can use that to check if it was successful, which the value would be 200. <br />
+<br />
+If the upload was a success, you will also get the variable <b><span style="color: #0303FF;">id=…</span></b> which will have the video’s new id ( http://www.youtube.com/watch?v= ). <br />
+<br />
+If the status wasn’t 200, then an error occured and you will get the variable <b><span style="color: #0303FF;">code=… </span></b>which will describe the error.<br />
+<br /></p>
+<hr />
+
+<p><br />
+That should be it. Easy huh? after 3 days I finally got this working so I figured it needed documenting and like i said, it’s probably going to change soon so who knows how long this will work.<br />
+<br />
+Google also has some code libraries you can use:<br />
+<a href="https://developers.google.com/youtube/v3/code_samples/php">https://developers.google.com/youtube/v3/code_samples/php</a><br />
+<br />
+I looked into them, but was having trouble fitting the code into my project, so maybe if I started with all this in mind, I would’ve been able to use them.</p>
+
+  </section>
+
+    <footer>
+        
+        <a href="/blog/the-selected-jquery-plugin.html" class="post-prev">&larr; Previous post</a> 
+        
+        <a href="/blog/moving-to-raleigh-to-work-for-infusion.html" class="post-next">Next post &rarr;</a> 
+    </footer>
+</article>
+
+
+    </div>
+    <!-- Footer -->
+<footer id="footer">
+
+    <ul class="icons">
+        <li><a href="https://www.linkedin.com/in/jasonsavage2" class="icon circle fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+        <li><a href="https://plus.google.com/102994115954672547056/posts" class="icon circle fa-google-plus" target="_blank"><span class="label">Google+</span></a></li>
+        <li><a href="https://github.com/jasonsavage" class="icon circle fa-github" target="_blank"><span class="label">Github</span></a></li>
+    </ul>
+
+    <ul class="copyright">
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+    </ul>
+
+</footer>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-69145232-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  </body>
+
+</html>
