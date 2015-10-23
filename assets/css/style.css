@@ -473,6 +473,11 @@
 			opacity: 0.6;
 			margin-top: -20px;
 		}
+		.icon.map {
+			background: url(images/map.png) no-repeat top center;
+			opacity: 0.6;
+			margin-top: -20px;
+		}
 
 /* List */
 
