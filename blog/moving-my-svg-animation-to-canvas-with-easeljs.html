@@ -10,8 +10,10 @@
 <head>
     <title>Moving my SVG Animation to Canvas with EaselJS (follow-up post)</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <meta name="description" content="My everyday struggles with the web">
-    <meta name="keywords" content="" />
+    <meta name="description" content="This is a follow-up to the previous post titled “SVG Animation With Clip Paths and Linear Gradients”. I was able you port the SVG animation over to the &lt;canvas /&gt; using EaselJS. It wasn’t too bad, I was having a lot of trouble converting the SVG path data that was exported from illustrator, but that all changed when my co-worker found this site: www.professorcloud.com/svg-to-canvas/.
+
+">
+    <meta name="keywords" content="javascript, html5, css3, php, ruby, web, development, source code, git, less, sass, animation, technology, website" />
     <!--[if lte IE 8]><script src="/assets/css/ie/html5shiv.js"></script><![endif]-->
     <script src="/assets/js/jquery.min.js"></script>
     <script src="/assets/js/jquery.dropotron.min.js"></script>
@@ -32,8 +34,20 @@
     <!--[if lte IE 9]><link rel="stylesheet" href="/assets/css/ie/v9.css" /><![endif]-->
     <meta name="viewport" content="width=device-width">
 
-    <link rel="canonical" href="http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html">
+    <link rel="canonical" href="http://jasonsavage.github.io/blog/moving-my-svg-animation-to-canvas-with-easeljs.html">
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-69145232-1', 'auto');
+      ga('send', 'pageview');
+    </script>
 </head>
+
+
 
 
   <body class="no-sidebar">
@@ -222,20 +236,13 @@ function drawBlueStrip(g) {
     </ul>
 
     <ul class="copyright">
-        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+        <li>&copy;<script>document.write(new Date().getFullYear());</script> Jason Savage</li>
+        <li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
     </ul>
 
 </footer>
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-69145232-1', 'auto');
-  ga('send', 'pageview');
-</script>
 
 
   </body>

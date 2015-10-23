@@ -3,10 +3,10 @@
   <channel>
     <title>Jason Writes Code</title>
     <description>My everyday struggles with the web</description>
-    <link>http://locahost:4000/</link>
-    <atom:link href="http://locahost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 22 Oct 2015 16:30:53 -0400</pubDate>
-    <lastBuildDate>Thu, 22 Oct 2015 16:30:53 -0400</lastBuildDate>
+    <link>http://jasonsavage.github.io/</link>
+    <atom:link href="http://jasonsavage.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Fri, 23 Oct 2015 10:58:15 -0400</pubDate>
+    <lastBuildDate>Fri, 23 Oct 2015 10:58:15 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -15,7 +15,7 @@
 
 &lt;p&gt;I’ve used &lt;a href=&quot;https://wordpress.com/&quot;&gt;Wordpress&lt;/a&gt; before and on many hosting site it can be installed with a click of a button. That’s great and there are tons of themes out there, but when you get into it, I still find it hard to customize a theme. For one thing, there’s about a thousand PHP files to look through and edit after you install a theme.&lt;/p&gt;
 
-&lt;p&gt;This led me to &lt;a href=&quot;https://ghost.org/&quot;&gt;Ghost&lt;/a&gt; which looks awesome and easy to use, plus there hosting plan will take care of any setup needed. Ghost is a &lt;a href=&quot;https://nodejs.org&quot;&gt;nodejs&lt;/a&gt; based site which it promotes as making it lightning fast compared to other platforms. Unfortunately, a lot of basic web hosts don’t support nodejs sites, so if you decide to use your own web host you might run into some issues. I ended up not using Ghost because it’s not free. :)&lt;/p&gt;
+&lt;p&gt;This led me to &lt;a href=&quot;https://ghost.org/&quot;&gt;Ghost&lt;/a&gt; which looks awesome and easy to use, plus their hosting plan will take care of any setup needed. Ghost is a &lt;a href=&quot;https://nodejs.org&quot;&gt;nodejs&lt;/a&gt; based site which it promotes as making it lightning fast compared to other platforms. Unfortunately, a lot of basic web hosts don’t support nodejs sites, so if you decide to use your own web host you might run into some issues. I ended up not using Ghost because it’s not free. :)&lt;/p&gt;
 
 &lt;p&gt;Finally, I came across &lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;. The difference with Jekyll is that it’s not really a blog site or platform like WordPress or Ghost, but a site generator. What is also neat is that it doesn’t use a database.&lt;/p&gt;
 
@@ -71,8 +71,8 @@
 &lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Thu, 22 Oct 2015 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</guid>
+        <link>http://jasonsavage.github.io/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/moved-my-blog-to-github-using-jekyll-and-prism.html</guid>
         
         
       </item>
@@ -207,8 +207,8 @@
 
 </description>
         <pubDate>Thu, 25 Jun 2015 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/tips-for-building-angularjs-forms-with-validation.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/tips-for-building-angularjs-forms-with-validation.html</guid>
+        <link>http://jasonsavage.github.io/blog/tips-for-building-angularjs-forms-with-validation.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/tips-for-building-angularjs-forms-with-validation.html</guid>
         
         
       </item>
@@ -435,8 +435,8 @@ function drawLink(ctx, agent, linkedAgent) {
 &lt;p&gt;Happy Coding!&lt;/p&gt;
 </description>
         <pubDate>Wed, 29 Apr 2015 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/html5-canvas-drawing-and-animation-101.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/html5-canvas-drawing-and-animation-101.html</guid>
+        <link>http://jasonsavage.github.io/blog/html5-canvas-drawing-and-animation-101.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/html5-canvas-drawing-and-animation-101.html</guid>
         
         
       </item>
@@ -555,8 +555,8 @@ function drawLink(ctx, agent, linkedAgent) {
 &lt;/ul&gt;
 </description>
         <pubDate>Thu, 05 Mar 2015 00:00:00 -0500</pubDate>
-        <link>http://locahost:4000/blog/instead-of-ng-include-try-an-angularjs-directive.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/instead-of-ng-include-try-an-angularjs-directive.html</guid>
+        <link>http://jasonsavage.github.io/blog/instead-of-ng-include-try-an-angularjs-directive.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/instead-of-ng-include-try-an-angularjs-directive.html</guid>
         
         
       </item>
@@ -637,8 +637,8 @@ myTruck.drive(90);
 &lt;p&gt;One of the great things about this way is you can now have real private variables. There is no way to access _color and _wheels, unless you create getters and setters which is generally a good practice. We can even have private functions inside our factory methods. Here is a Wiki link to learn more about the &lt;a href=&quot;http://en.wikipedia.org/wiki/Factory_method_pattern&quot;&gt;Factory Method Pattern&lt;/a&gt;. This article only covers a small part of it.&lt;/p&gt;
 </description>
         <pubDate>Fri, 19 Dec 2014 00:00:00 -0500</pubDate>
-        <link>http://locahost:4000/blog/stop-trying-to-add-class-structure-to-javascript.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/stop-trying-to-add-class-structure-to-javascript.html</guid>
+        <link>http://jasonsavage.github.io/blog/stop-trying-to-add-class-structure-to-javascript.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/stop-trying-to-add-class-structure-to-javascript.html</guid>
         
         
       </item>
@@ -906,8 +906,8 @@ mainApp.controller(&#39;customAngularTableCtrl&#39;, function ($scope) {
 &lt;p&gt;This will setup a very basic angular data table directive with filtering, sorting and paging that you can add to as needed. For paging I used &lt;a href=&quot;http://angular-ui.github.io/bootstrap/#/pagination&quot;&gt;Angular UI Bootstrap&lt;/a&gt; which works really nice. In the app I’m working on we added custom filters, sorters and input fields into the table body with validation. Basicly, Excel in the browser :). You are free to use these files as you like and they can be found on my GitHub repo &lt;a href=&quot;https://github.com/jasonsavage/simple-angular-table&quot;&gt;github.com/jasonsavage/simple-angular-table&lt;/a&gt;.&lt;/p&gt;
 </description>
         <pubDate>Mon, 14 Jul 2014 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/angularjs-custom-data-table-example.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/angularjs-custom-data-table-example.html</guid>
+        <link>http://jasonsavage.github.io/blog/angularjs-custom-data-table-example.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/angularjs-custom-data-table-example.html</guid>
         
         
       </item>
@@ -921,8 +921,8 @@ mainApp.controller(&#39;customAngularTableCtrl&#39;, function ($scope) {
 &lt;p&gt;It saddens me to leave my current role with Moxie and move out of the city I’ve grown to love (and hate sometimes), but this is a great opportunity and I have to give it a try. Raleigh is a really pretty city and the area is booming with a lot of tech jobs, so we’ll see how it goes… and hey, you can always move back, right?&lt;/p&gt;
 </description>
         <pubDate>Wed, 04 Jun 2014 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/moving-to-raleigh-to-work-for-infusion.html</guid>
+        <link>http://jasonsavage.github.io/blog/moving-to-raleigh-to-work-for-infusion.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/moving-to-raleigh-to-work-for-infusion.html</guid>
         
         
       </item>
@@ -970,8 +970,8 @@ var date = new Date( created );
 &lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Thu, 08 May 2014 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/date-strings-from-twitter-and-facebook-invalid.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/date-strings-from-twitter-and-facebook-invalid.html</guid>
+        <link>http://jasonsavage.github.io/blog/date-strings-from-twitter-and-facebook-invalid.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/date-strings-from-twitter-and-facebook-invalid.html</guid>
         
         
       </item>
@@ -1121,8 +1121,8 @@ function drawBlueStrip(g) {
 &lt;/code&gt;&lt;/pre&gt;
 </description>
         <pubDate>Mon, 05 May 2014 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</guid>
+        <link>http://jasonsavage.github.io/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/moving-my-svg-animation-to-canvas-with-easeljs.html</guid>
         
         
       </item>
@@ -1251,8 +1251,8 @@ That last sentence about it being more &lt;a href=&quot;http://caniuse.com/#cats
 
 </description>
         <pubDate>Sun, 04 May 2014 00:00:00 -0400</pubDate>
-        <link>http://locahost:4000/blog/svg-animation-with-clip-path-and-linear-gradients.html</link>
-        <guid isPermaLink="true">http://locahost:4000/blog/svg-animation-with-clip-path-and-linear-gradients.html</guid>
+        <link>http://jasonsavage.github.io/blog/svg-animation-with-clip-path-and-linear-gradients.html</link>
+        <guid isPermaLink="true">http://jasonsavage.github.io/blog/svg-animation-with-clip-path-and-linear-gradients.html</guid>
         
         
       </item>
